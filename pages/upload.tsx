@@ -280,6 +280,7 @@ const Upload: NextPage = () => {
             <div className="hidden md:flex space-x-8">
               <a href="/" className="hover:text-gray-200 transition-colors">Home</a>
               <a href="#" className="text-gray-300">Upload</a>
+              <a href="/dashboard" className="hover:text-gray-200 transition-colors">Dashboard</a>
               <a href="#contact" className="hover:text-gray-200 transition-colors">Contact</a>
             </div>
           </nav>

@@ -1,0 +1,199 @@
+{
+  "thermalAnomalies": [
+    {
+      "id": "anomaly_001",
+      "jobId": "job_mfmvv1ks_6mik79tsm",
+      "type": "hotspot",
+      "severity": "high",
+      "coordinates": {
+        "lat": 36.1627,
+        "lng": -115.1656
+      },
+      "temperature": 85.2,
+      "description": "Solar panel hot spot detected in module array",
+      "image": "thermal-overheating.jpg",
+      "detectedAt": "2025-09-16T14:30:00.000Z"
+    },
+    {
+      "id": "anomaly_002", 
+      "jobId": "job_mfmvv1ks_6mik79tsm",
+      "type": "electrical",
+      "severity": "critical",
+      "coordinates": {
+        "lat": 36.1635,
+        "lng": -115.1670
+      },
+      "temperature": 92.5,
+      "description": "Overheating electrical switch in substation",
+      "image": "overheating-switch.jpg",
+      "detectedAt": "2025-09-16T14:32:15.000Z"
+    },
+    {
+      "id": "anomaly_003",
+      "jobId": "job_mfmvv1ks_6mik79tsm",
+      "type": "module_failure",
+      "severity": "medium",
+      "coordinates": {
+        "lat": 36.1620,
+        "lng": -115.1648
+      },
+      "temperature": 78.1,
+      "description": "PV module cell failure in solar array",
+      "image": "pv-field-aerial.jpg",
+      "detectedAt": "2025-09-16T14:25:30.000Z"
+    },
+    {
+      "id": "anomaly_004",
+      "jobId": "job_sample_2",
+      "type": "inverter",
+      "severity": "high",
+      "coordinates": {
+        "lat": 34.0522,
+        "lng": -118.2437
+      },
+      "temperature": 88.7,
+      "description": "Inverter overheating in large solar installation",
+      "image": "large-solar-installation.jpg",
+      "detectedAt": "2025-09-15T11:45:22.000Z"
+    },
+    {
+      "id": "anomaly_005",
+      "jobId": "job_sample_2", 
+      "type": "connection",
+      "severity": "medium",
+      "coordinates": {
+        "lat": 34.0530,
+        "lng": -118.2445
+      },
+      "temperature": 81.3,
+      "description": "Hot connection point in electrical junction",
+      "image": "thermal-substation.jpg",
+      "detectedAt": "2025-09-15T11:48:10.000Z"
+    },
+    {
+      "id": "anomaly_006",
+      "jobId": "job_sample_3",
+      "type": "hotspot",
+      "severity": "low",
+      "coordinates": {
+        "lat": 37.7749,
+        "lng": -122.4194
+      },
+      "temperature": 72.8,
+      "description": "Minor hot spot in solar array edge modules",
+      "image": "solar-array-aerial.jpg",
+      "detectedAt": "2025-09-14T16:20:45.000Z"
+    }
+  ],
+  "jobsWithAnomalies": [
+    {
+      "id": "job_mfmvv1ks_6mik79tsm",
+      "status": "completed",
+      "fileCount": 5,
+      "processedCount": 5,
+      "anomalyCount": 3,
+      "location": "Nevada Solar Farm",
+      "centerCoordinates": {
+        "lat": 36.1627,
+        "lng": -115.1656
+      },
+      "createdAt": "2025-09-16T18:25:17.500Z",
+      "completedAt": "2025-09-16T18:30:45.200Z",
+      "reportGenerated": true
+    },
+    {
+      "id": "job_sample_2",
+      "status": "completed",
+      "fileCount": 12,
+      "processedCount": 12,
+      "anomalyCount": 2,
+      "location": "Los Angeles Industrial Complex",
+      "centerCoordinates": {
+        "lat": 34.0522,
+        "lng": -118.2437
+      },
+      "createdAt": "2025-09-15T11:30:00.000Z",
+      "completedAt": "2025-09-15T11:52:30.000Z",
+      "reportGenerated": true
+    },
+    {
+      "id": "job_sample_3",
+      "status": "processing",
+      "fileCount": 8,
+      "processedCount": 6,
+      "anomalyCount": 1,
+      "location": "San Francisco Rooftop Installation",
+      "centerCoordinates": {
+        "lat": 37.7749,
+        "lng": -122.4194
+      },
+      "createdAt": "2025-09-14T16:15:00.000Z",
+      "completedAt": null,
+      "reportGenerated": false
+    },
+    {
+      "id": "job_sample_4",
+      "status": "uploading",
+      "fileCount": 15,
+      "processedCount": 0,
+      "anomalyCount": 0,
+      "location": "Arizona Desert Solar Park",
+      "centerCoordinates": {
+        "lat": 33.4484,
+        "lng": -112.0740
+      },
+      "createdAt": "2025-09-16T09:15:00.000Z",
+      "completedAt": null,
+      "reportGenerated": false
+    }
+  ],
+  "anomalyTypes": {
+    "hotspot": {
+      "color": "#DC2626",
+      "icon": "🔥",
+      "description": "Solar panel hot spot"
+    },
+    "electrical": {
+      "color": "#7C2D12", 
+      "icon": "⚡",
+      "description": "Electrical component overheating"
+    },
+    "module_failure": {
+      "color": "#EA580C",
+      "icon": "🔧",
+      "description": "PV module cell failure"
+    },
+    "inverter": {
+      "color": "#BE123C",
+      "icon": "🔌",
+      "description": "Inverter temperature issue"
+    },
+    "connection": {
+      "color": "#A21CAF",
+      "icon": "🔗",
+      "description": "Hot electrical connection"
+    }
+  },
+  "severityLevels": {
+    "low": {
+      "color": "#FDE047",
+      "priority": 1,
+      "description": "Minor issue requiring monitoring"
+    },
+    "medium": {
+      "color": "#FB923C",
+      "priority": 2, 
+      "description": "Moderate issue requiring attention"
+    },
+    "high": {
+      "color": "#F97316",
+      "priority": 3,
+      "description": "High priority issue requiring immediate action"
+    },
+    "critical": {
+      "color": "#DC2626",
+      "priority": 4,
+      "description": "Critical issue requiring urgent intervention"
+    }
+  }
+}
