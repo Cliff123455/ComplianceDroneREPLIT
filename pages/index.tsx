@@ -1,8 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
+import { useAuth } from "../hooks/useAuth";
 
 const Home: NextPage = () => {
+  const { user, isAuthenticated, login, logout } = useAuth();
   return (
     <>
       <Head>
@@ -27,11 +30,28 @@ const Home: NextPage = () => {
               />
               <h1 className="text-2xl font-bold">ComplianceDrone</h1>
             </div>
-            <div className="hidden md:flex space-x-8">
+            <div className="hidden md:flex items-center space-x-8">
               <a href="#services" className="hover:text-gray-200 transition-colors">Services</a>
-              <a href="/upload" className="hover:text-gray-200 transition-colors">Upload</a>
-              <a href="/dashboard" className="hover:text-gray-200 transition-colors">Dashboard</a>
-              <a href="#about" className="hover:text-gray-200 transition-colors">About</a>
+              {isAuthenticated ? (
+                <>
+                  <Link href="/upload" className="hover:text-gray-200 transition-colors">Upload</Link>
+                  <Link href="/dashboard" className="hover:text-gray-200 transition-colors">Dashboard</Link>
+                  <Link href="/profile" className="hover:text-gray-200 transition-colors">Profile</Link>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-sm">
+                      {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.email}
+                    </span>
+                    <button onClick={logout} className="text-sm hover:text-gray-200 transition-colors">
+                      Logout
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <a href="#about" className="hover:text-gray-200 transition-colors">About</a>
+                  <button onClick={login} className="hover:text-gray-200 transition-colors">Login</button>
+                </>
+              )}
               <a href="#contact" className="hover:text-gray-200 transition-colors">Contact</a>
             </div>
           </nav>
@@ -54,9 +74,15 @@ const Home: NextPage = () => {
                 <button className="btn-primary text-lg px-8 py-4">
                   Request Inspection
                 </button>
-                <button className="btn-secondary text-lg px-8 py-4">
-                  Become a Pilot
-                </button>
+                {isAuthenticated ? (
+                  <Link href="/register" className="btn-secondary text-lg px-8 py-4">
+                    Become a Pilot
+                  </Link>
+                ) : (
+                  <button onClick={login} className="btn-secondary text-lg px-8 py-4">
+                    Login to Apply
+                  </button>
+                )}
               </div>
             </div>
             <div>

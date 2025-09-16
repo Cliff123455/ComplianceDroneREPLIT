@@ -4,6 +4,8 @@ import fs from 'fs/promises';
 import fsSync from 'fs';
 import path from 'path';
 import { createReadStream } from 'fs';
+import { hasValidSession } from '../../lib/nextAuth';
+import { isValidJobId, getSecureJobPath, getSecureFilePath, sanitizeFilename, getUploadsDir } from '../../lib/pathValidation';
 
 export const config = {
   api: {
@@ -14,7 +16,7 @@ export const config = {
 
 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/tiff'];
 const maxFileSize = 20 * 1024 * 1024; // 20MB
-const uploadsDir = path.join(process.cwd(), 'uploads');
+const uploadsDir = getUploadsDir();
 const jobsIndexPath = path.join(uploadsDir, 'jobs-index.json');
 
 // File signatures for validation (magic numbers)
@@ -94,7 +96,11 @@ const saveJobsIndex = async (index: any) => {
 
 // Update job status in both metadata and jobs index
 const updateJobStatus = async (jobId: string, status: string, metadata?: any) => {
-  const jobDir = path.join(uploadsDir, jobId);
+  // Validate jobId and get secure path
+  if (!isValidJobId(jobId)) {
+    throw new Error('Invalid job ID format');
+  }
+  const jobDir = getSecureJobPath(jobId);
   const jobMetadataPath = path.join(jobDir, 'metadata.json');
   
   try {
@@ -144,14 +150,22 @@ const validateFile = async (file: File): Promise<string | null> => {
 };
 
 const generateUniqueFilename = (originalName: string): string => {
+  const sanitized = sanitizeFilename(originalName);
   const timestamp = Date.now();
   const random = Math.random().toString(36).substr(2, 9);
-  const extension = path.extname(originalName);
-  const baseName = path.basename(originalName, extension);
+  const extension = path.extname(sanitized);
+  const baseName = path.basename(sanitized, extension);
   return `${baseName}_${timestamp}_${random}${extension}`;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Check authentication first
+  if (!(await hasValidSession(req))) {
+    return res.status(401).json({ 
+      error: 'Unauthorized',
+      message: 'Authentication required. Please log in to continue.' 
+    });
+  }
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -176,6 +190,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!jobId) {
       return res.status(400).json({ error: 'Job ID is required' });
     }
+    
+    // Validate jobId format to prevent path traversal
+    if (!isValidJobId(jobId)) {
+      return res.status(400).json({ 
+        error: 'Invalid job ID format. Only alphanumeric characters, underscores, and hyphens are allowed.' 
+      });
+    }
 
     const uploadedFile = Array.isArray(files.file) ? files.file[0] : files.file;
     if (!uploadedFile) {
@@ -192,20 +213,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: validationError });
     }
 
-    // Create job directory if it doesn't exist
-    const jobDir = path.join(uploadsDir, jobId);
+    // Create secure job directory if it doesn't exist
+    const jobDir = getSecureJobPath(jobId);
     if (!fsSync.existsSync(jobDir)) {
       await fs.mkdir(jobDir, { recursive: true });
     }
 
-    // Generate unique filename and move file to job directory
+    // Generate unique filename and create secure file path
     const uniqueFilename = generateUniqueFilename(uploadedFile.originalFilename || 'unknown');
-    const finalPath = path.join(jobDir, uniqueFilename);
+    const finalPath = getSecureFilePath(jobId, uniqueFilename);
     
     // Move file to final location
     await fs.rename(uploadedFile.filepath, finalPath);
 
-    // Update job metadata
+    // Update job metadata with secure path
     const jobMetadataPath = path.join(jobDir, 'metadata.json');
     let jobMetadata = {
       id: jobId,
@@ -264,6 +285,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     if (error.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({ error: 'File too large. Maximum size is 20MB.' });
+    }
+    
+    // Handle path traversal security errors specifically
+    if (error instanceof Error && (error.message.includes('Invalid job ID') || error.message.includes('Path traversal'))) {
+      return res.status(400).json({ error: 'Security validation failed: Invalid job ID or filename' });
     }
     
     res.status(500).json({ 

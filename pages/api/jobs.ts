@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import path from 'path';
+import { hasValidSession } from '../../lib/nextAuth';
+import { isValidJobId, getSecureJobPath, getUploadsDir } from '../../lib/pathValidation';
 
-const uploadsDir = path.join(process.cwd(), 'uploads');
+const uploadsDir = getUploadsDir();
 const jobsIndexPath = path.join(uploadsDir, 'jobs-index.json');
 
 // Ensure uploads directory exists
@@ -69,8 +71,8 @@ const createJob = (fileCount: number): JobMetadata => {
     updatedAt: timestamp
   };
 
-  // Create job directory
-  const jobDir = path.join(uploadsDir, jobId);
+  // Create secure job directory
+  const jobDir = getSecureJobPath(jobId);
   if (!fs.existsSync(jobDir)) {
     fs.mkdirSync(jobDir, { recursive: true });
   }
@@ -94,7 +96,13 @@ const createJob = (fileCount: number): JobMetadata => {
 };
 
 const getJob = (jobId: string): JobMetadata | null => {
-  const jobDir = path.join(uploadsDir, jobId);
+  // Validate jobId format to prevent path traversal
+  if (!isValidJobId(jobId)) {
+    console.error('Invalid job ID format:', jobId);
+    return null;
+  }
+  
+  const jobDir = getSecureJobPath(jobId);
   const jobMetadataPath = path.join(jobDir, 'metadata.json');
   
   if (!fs.existsSync(jobMetadataPath)) {
@@ -116,8 +124,8 @@ const updateJobStatus = (jobId: string, status: JobMetadata['status']): JobMetad
   job.status = status;
   job.updatedAt = new Date().toISOString();
 
-  // Save updated job metadata
-  const jobDir = path.join(uploadsDir, jobId);
+  // Save updated job metadata with secure path
+  const jobDir = getSecureJobPath(jobId);
   const jobMetadataPath = path.join(jobDir, 'metadata.json');
   fs.writeFileSync(jobMetadataPath, JSON.stringify(job, null, 2));
 
@@ -147,6 +155,13 @@ const listJobs = (limit: number = 50): JobsIndex => {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Check authentication first
+  if (!(await hasValidSession(req))) {
+    return res.status(401).json({ 
+      error: 'Unauthorized',
+      message: 'Authentication required. Please log in to continue.' 
+    });
+  }
   try {
     switch (req.method) {
       case 'POST':
@@ -169,6 +184,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { jobId } = req.query;
         
         if (jobId && typeof jobId === 'string') {
+          // Validate jobId format before processing
+          if (!isValidJobId(jobId)) {
+            return res.status(400).json({ 
+              error: 'Invalid job ID format. Only alphanumeric characters, underscores, and hyphens are allowed.' 
+            });
+          }
+          
           // Get specific job
           const job = getJob(jobId);
           if (!job) {
@@ -190,6 +212,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         
         if (!updateJobId || typeof updateJobId !== 'string') {
           return res.status(400).json({ error: 'Job ID is required' });
+        }
+        
+        // Validate jobId format before processing
+        if (!isValidJobId(updateJobId)) {
+          return res.status(400).json({ 
+            error: 'Invalid job ID format. Only alphanumeric characters, underscores, and hyphens are allowed.' 
+          });
         }
 
         if (!status || !['created', 'uploading', 'processing', 'completed', 'error'].includes(status)) {

@@ -23,11 +23,12 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 41741
+localPort = 42171
 externalPort = 3000
 
 [agent]
 expertMode = true
+integrations = ["javascript_log_in_with_replit:1.0.0", "javascript_database:1.0.0"]
 
 [workflows]
 runButton = "Project"
@@ -47,7 +48,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev -- --port 5000"
+args = "npm run server"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
