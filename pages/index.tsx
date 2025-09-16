@@ -29,6 +29,7 @@ const Home: NextPage = () => {
             </div>
             <div className="hidden md:flex space-x-8">
               <a href="#services" className="hover:text-gray-200 transition-colors">Services</a>
+              <a href="/upload" className="hover:text-gray-200 transition-colors">Upload</a>
               <a href="#about" className="hover:text-gray-200 transition-colors">About</a>
               <a href="#contact" className="hover:text-gray-200 transition-colors">Contact</a>
             </div>
