@@ -33,7 +33,7 @@ const Home: NextPage = () => {
                 />
                 <h1 className="text-2xl font-bold text-white">ComplianceDrone</h1>
               </div>
-              <div className="flex items-center space-x-8">
+              <div className="flex items-center space-x-6">
                 {isAuthenticated ? (
                   <>
                     <Link href="/dashboard" className="text-white hover:text-gray-200 transition-colors">Dashboard</Link>
@@ -47,7 +47,14 @@ const Home: NextPage = () => {
                     </div>
                   </>
                 ) : (
-                  <button onClick={login} className="text-white hover:text-gray-200 transition-colors">Login</button>
+                  <div className="flex items-center space-x-4">
+                    <button onClick={login} className="text-white hover:text-gray-200 transition-colors font-medium">
+                      Sign In
+                    </button>
+                    <Link href="/register" className="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-opacity-30 transition-all font-medium">
+                      Sign Up
+                    </Link>
+                  </div>
                 )}
               </div>
             </nav>
@@ -56,18 +63,8 @@ const Home: NextPage = () => {
 
         {/* Main Message Card */}
         <section className="relative z-10 flex items-center justify-center px-4" style={{minHeight: 'calc(100vh - 200px)'}}>
-          <div className="message-card max-w-4xl mx-auto">
+          <div className="message-card-centered mx-auto">
             <div className="text-center">
-              <div className="mb-8">
-                <Image 
-                  src="/compliance-drone-shield-logo.png" 
-                  alt="ComplianceDrone Shield Logo" 
-                  width={120} 
-                  height={120}
-                  priority
-                  className="mx-auto mb-6"
-                />
-              </div>
               
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
                 Our aerial construction management platform has saved companies millions in avoided catastrophes
@@ -79,7 +76,7 @@ const Home: NextPage = () => {
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <Link href="/register" className="btn-primary-large">
-                  Apply to be a Pilot
+                  Apply to Fly
                 </Link>
                 <Link href="/contact" className="btn-secondary-large">
                   Request a Quote
