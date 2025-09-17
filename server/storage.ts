@@ -11,7 +11,7 @@ import {
   type UpsertPilotProfile,
   type UserWithPilotProfile,
   type PilotWithUser,
-} from "@shared/schema";
+} from "../shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
 

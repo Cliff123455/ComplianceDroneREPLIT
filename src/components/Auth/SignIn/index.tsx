@@ -3,6 +3,7 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import SocialSignup from "../SocialSignup";
 import SwitchOptions from "../SwitchOptions";
@@ -31,6 +32,7 @@ const SigninSchema = z.object({
 });
 
 const Signin = () => {
+  const router = useRouter();
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -55,7 +57,7 @@ const Signin = () => {
     }
 
     setLoader(true);
-    signIn("credentials", { ...data, redirect: false }).then((callback) => {
+    signIn("credentials", { ...data, redirect: false }).then(async (callback) => {
       if (callback?.error) {
         toast.error(callback.error);
         setLoader(false);
@@ -65,6 +67,24 @@ const Signin = () => {
       if (callback?.ok && !callback?.error) {
         toast.success("Logged in successfully");
         setLoader(false);
+        
+        // Check if user is a pilot and redirect to dashboard
+        try {
+          const response = await fetch('/api/auth/user');
+          if (response.ok) {
+            const user = await response.json();
+            if (user?.pilotProfile) {
+              router.push('/pilots/dashboard');
+            } else {
+              router.push('/');
+            }
+          } else {
+            router.push('/');
+          }
+        } catch (error) {
+          console.error('Error checking user profile:', error);
+          router.push('/');
+        }
         return;
       }
     });
