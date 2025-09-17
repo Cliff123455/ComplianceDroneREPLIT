@@ -36,26 +36,31 @@ const Hero = () => {
             />
 
             <span className='hero-subtitle-text'>
-              Launch Your AI Startup with
+              Professional Thermal Inspection Services
             </span>
           </span>
           <h1 className='xl:text-heading-1 mb-6 text-3xl font-extrabold text-white sm:text-5xl'>
-            OpenAI + Next.js SaaS Boilerplate and Starter Kit
+            Save Thousands with Early Problem Detection Using Advanced Drone Technology
           </h1>
 
           <p className='mx-auto mb-9 max-w-[500px] font-medium md:text-lg'>
-            Ideal for developers looking to build SaaS applications using OpenAI
-            and Next.js, this starter kit comes with pre-configured and
-            pre-built examples, making it easier to quickly kickstart your AI
-            startup.
+            ComplianceDrone provides AI-powered thermal inspection services that detect electrical issues, equipment failures, and maintenance needs before they become costly problems. Our certified pilots use cutting-edge thermal imaging to save you money and prevent catastrophic failures.
           </p>
 
-          <Link
-            href='/ai-examples'
-            className='hero-button-gradient inline-flex rounded-lg px-7 py-3 font-medium text-white duration-300 ease-in hover:opacity-80'
-          >
-            Try AI Examples
-          </Link>
+          <div className='flex flex-col gap-4 sm:flex-row sm:justify-center sm:gap-6'>
+            <Link
+              href='/contact'
+              className='hero-button-gradient inline-flex rounded-lg px-7 py-3 font-medium text-white duration-300 ease-in hover:opacity-80'
+            >
+              Request Quote
+            </Link>
+            <Link
+              href='/pilots'
+              className='inline-flex rounded-lg border border-white/20 bg-white/5 px-7 py-3 font-medium text-white backdrop-blur-sm duration-300 ease-in hover:bg-white/10'
+            >
+              Apply to Fly
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -65,7 +70,7 @@ const Hero = () => {
       >
         <Image
           className='mx-auto'
-          src='./images/hero/hero.svg'
+          src='/images/hero/hero.svg'
           alt='hero'
           fill
         />
