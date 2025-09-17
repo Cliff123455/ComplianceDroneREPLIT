@@ -112,7 +112,7 @@ export default function PilotsPage() {
 
         <div className="mt-10 text-center">
           <Link
-            href="/auth/signup"
+            href="/pilot-registration"
             className="mr-4 inline-flex rounded-lg bg-primary px-8 py-3 font-medium text-white transition-colors hover:bg-primary-dark"
           >
             Start Application
