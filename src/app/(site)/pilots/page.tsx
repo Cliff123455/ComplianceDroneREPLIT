@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import NewsletterSignup from "@/components/NewsletterSignup";
+import dynamic from "next/dynamic";
+
+const NewsletterSignup = dynamic(() => import("@/components/NewsletterSignup"));
 
 export const metadata: Metadata = {
   title: "Apply to Fly - ComplianceDrone Pilot Network",
