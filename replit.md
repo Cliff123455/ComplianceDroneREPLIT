@@ -29,10 +29,16 @@ ComplianceDrone.com is a professional thermal inspection platform that uses AI-p
 - **Button gradients**: Blue-gray focused for professional appearance
 
 ## Recent Changes
+- **September 17, 2025**: Community features and email integration added
+  - Nationwide pilot community section with newsletter signup
+  - Replit Mail integration for automated welcome emails  
+  - Enhanced pilot recruitment messaging (coast-to-coast coverage)
+  - Newsletter API endpoint for solar/drone inspection updates
 - **September 16, 2025**: Initial project setup with professional thermal inspection branding
-- ComplianceDrone homepage with real thermal inspection images
-- Professional gradient design system implemented
-- Hero section showcasing large-scale solar installation capabilities
+  - ComplianceDrone homepage with real thermal inspection images
+  - Professional blue-gray gradient design system (replaced purple)
+  - Hero section showcasing large-scale solar installation capabilities
+  - New ComplianceDrone banner logo with thermal grid pattern integrated
 
 ## User Preferences
 - Professional, corporate design aesthetic
