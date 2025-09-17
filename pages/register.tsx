@@ -8,6 +8,20 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { validateEmail, validatePhone, validatePart107 } from "../lib/authUtils";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Chip,
+  OutlinedInput,
+  Box,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  Typography
+} from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 interface RegistrationForm {
   // Business Information
@@ -32,6 +46,7 @@ interface RegistrationForm {
   // Equipment
   droneModels: string[];
   thermalCameraModels: string[];
+  additionalEquipment: string[];
   
   // Insurance
   hasInsurance: boolean;
@@ -41,8 +56,9 @@ interface RegistrationForm {
   liabilityCoverage: number;
   
   // Service Area
-  serviceStates: string[];
-  maxTravelDistance: number;
+  serviceAreaType: 'local' | 'nationwide';
+  serviceRadius: number;
+  isNationwide: boolean;
   
   // Application Notes
   applicationNotes: string;
@@ -64,13 +80,15 @@ const initialForm: RegistrationForm = {
   totalFlightHours: 0,
   droneModels: [],
   thermalCameraModels: [],
+  additionalEquipment: [],
   hasInsurance: false,
   insuranceProvider: '',
   insurancePolicyNumber: '',
   insuranceExpiryDate: '',
   liabilityCoverage: 0,
-  serviceStates: [],
-  maxTravelDistance: 0,
+  serviceAreaType: 'local',
+  serviceRadius: 50,
+  isNationwide: false,
   applicationNotes: ''
 };
 
@@ -81,23 +99,50 @@ const US_STATES = [
 ];
 
 const DRONE_MODELS = [
+  'DJI Mavic 3 Enterprise',
   'DJI Mavic 3 Enterprise Thermal',
   'DJI Matrice 300 RTK',
   'DJI Matrice 30T',
+  'DJI Air 3',
   'Autel EVO Max 4T',
   'FLIR Vue TZ20',
   'Skydio X2',
-  'Other (Specify in notes)'
+  'Other'
 ];
 
 const THERMAL_CAMERAS = [
+  'DJI Zenmuse H30',
   'DJI Zenmuse H20T',
+  'DJI Zenmuse H20 Series',
   'DJI Zenmuse XT2',
   'FLIR Vue Pro R',
   'FLIR Duo Pro R',
+  'FLIR XT2',
   'Teledyne FLIR Boson',
   'Workswell WIRIS Pro',
-  'Other (Specify in notes)'
+  'Other'
+];
+
+const ADDITIONAL_INVENTORY = [
+  'RTK Base Station',
+  'Extra Batteries',
+  'Multi-battery Charging Hub',
+  'Rugged Carrying Case',
+  'iPad/Tablet Controller',
+  'Backup Controller',
+  'Memory Cards',
+  'Calibration Equipment',
+  'Other'
+];
+
+const TRAVEL_RADIUS_OPTIONS = [
+  { value: 25, label: '25 miles' },
+  { value: 50, label: '50 miles' },
+  { value: 100, label: '100 miles' },
+  { value: 150, label: '150 miles' },
+  { value: 200, label: '200 miles' },
+  { value: 250, label: '250 miles' },
+  { value: 300, label: '300 miles' },
 ];
 
 const Register: NextPage = () => {
@@ -169,12 +214,8 @@ const Register: NextPage = () => {
     }
 
     // Service area
-    if (formData.serviceStates.length === 0) {
-      newErrors.serviceStates = "Please select at least one service state";
-    }
-
-    if (formData.maxTravelDistance <= 0) {
-      newErrors.maxTravelDistance = "Maximum travel distance is required";
+    if (!formData.isNationwide && formData.serviceRadius <= 0) {
+      newErrors.serviceRadius = "Service radius is required for local service";
     }
 
     return newErrors;
@@ -217,12 +258,18 @@ const Register: NextPage = () => {
     }
   };
 
-  const handleMultiSelect = (field: keyof Pick<RegistrationForm, 'droneModels' | 'thermalCameraModels' | 'serviceStates'>, value: string) => {
+  const handleMultiSelect = (field: keyof Pick<RegistrationForm, 'droneModels' | 'thermalCameraModels' | 'additionalEquipment'>, value: string[]) => {
     setFormData(prev => ({
       ...prev,
-      [field]: prev[field].includes(value)
-        ? prev[field].filter(item => item !== value)
-        : [...prev[field], value]
+      [field]: value
+    }));
+  };
+
+  const handleServiceAreaChange = (isNationwide: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      isNationwide,
+      serviceAreaType: isNationwide ? 'nationwide' : 'local'
     }));
   };
 
@@ -529,47 +576,121 @@ const Register: NextPage = () => {
             {/* Equipment */}
             <section className="mb-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-2">
-                Equipment Owned
+                Equipment & Inventory
               </h3>
               
-              <div className="mb-6">
-                <label className="form-label">
-                  Drone Models * (Select all that you own)
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
-                  {DRONE_MODELS.map(model => (
-                    <label key={model} className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        checked={formData.droneModels.includes(model)}
-                        onChange={() => handleMultiSelect('droneModels', model)}
-                        className="form-checkbox"
-                      />
-                      <span className="text-sm">{model}</span>
-                    </label>
-                  ))}
+              <div className="cd-grid cd-grid-2 gap-6">
+                <div>
+                  <FormControl fullWidth error={!!errors.droneModels}>
+                    <InputLabel>Drone Models *</InputLabel>
+                    <Select<string[]>
+                      multiple
+                      value={formData.droneModels}
+                      onChange={(e: SelectChangeEvent<string[]>) => {
+                        const value = typeof e.target.value === 'string' ? [e.target.value] : e.target.value;
+                        handleMultiSelect('droneModels', value);
+                      }}
+                      input={<OutlinedInput label="Drone Models *" />}
+                      renderValue={(selected: string[]) => (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {selected.map((value) => (
+                            <Chip key={value} label={value} size="small" />
+                          ))}
+                        </Box>
+                      )}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '8px',
+                        },
+                      }}
+                    >
+                      {DRONE_MODELS.map((model) => (
+                        <MenuItem key={model} value={model}>
+                          {model}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.droneModels && (
+                      <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.75 }}>
+                        {errors.droneModels}
+                      </Typography>
+                    )}
+                  </FormControl>
                 </div>
-                {errors.droneModels && <p className="form-error">{errors.droneModels}</p>}
-              </div>
 
-              <div>
-                <label className="form-label">
-                  Thermal Camera Models * (Select all that you own)
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
-                  {THERMAL_CAMERAS.map(camera => (
-                    <label key={camera} className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        checked={formData.thermalCameraModels.includes(camera)}
-                        onChange={() => handleMultiSelect('thermalCameraModels', camera)}
-                        className="form-checkbox"
-                      />
-                      <span className="text-sm">{camera}</span>
-                    </label>
-                  ))}
+                <div>
+                  <FormControl fullWidth error={!!errors.thermalCameraModels}>
+                    <InputLabel>Thermal Camera Equipment *</InputLabel>
+                    <Select<string[]>
+                      multiple
+                      value={formData.thermalCameraModels}
+                      onChange={(e: SelectChangeEvent<string[]>) => {
+                        const value = typeof e.target.value === 'string' ? [e.target.value] : e.target.value;
+                        handleMultiSelect('thermalCameraModels', value);
+                      }}
+                      input={<OutlinedInput label="Thermal Camera Equipment *" />}
+                      renderValue={(selected: string[]) => (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {selected.map((value) => (
+                            <Chip key={value} label={value} size="small" />
+                          ))}
+                        </Box>
+                      )}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '8px',
+                        },
+                      }}
+                    >
+                      {THERMAL_CAMERAS.map((camera) => (
+                        <MenuItem key={camera} value={camera}>
+                          {camera}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.thermalCameraModels && (
+                      <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.75 }}>
+                        {errors.thermalCameraModels}
+                      </Typography>
+                    )}
+                  </FormControl>
                 </div>
-                {errors.thermalCameraModels && <p className="form-error">{errors.thermalCameraModels}</p>}
+              </div>
+              
+              <div className="mt-6">
+                <FormControl fullWidth>
+                  <InputLabel>Additional Equipment</InputLabel>
+                  <Select<string[]>
+                    multiple
+                    value={formData.additionalEquipment}
+                    onChange={(e: SelectChangeEvent<string[]>) => {
+                      const value = typeof e.target.value === 'string' ? [e.target.value] : e.target.value;
+                      handleMultiSelect('additionalEquipment', value);
+                    }}
+                    input={<OutlinedInput label="Additional Equipment" />}
+                    renderValue={(selected: string[]) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => (
+                          <Chip key={value} label={value} size="small" />
+                        ))}
+                      </Box>
+                    )}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '8px',
+                      },
+                    }}
+                  >
+                    {ADDITIONAL_INVENTORY.map((equipment) => (
+                      <MenuItem key={equipment} value={equipment}>
+                        {equipment}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <Typography variant="caption" color="textSecondary" sx={{ mt: 0.5, ml: 1.75 }}>
+                    Select any additional equipment you have available
+                  </Typography>
+                </FormControl>
               </div>
             </section>
 
@@ -664,43 +785,73 @@ const Register: NextPage = () => {
               </h3>
               
               <div className="mb-6">
-                <label className="form-label">
-                  States You Can Serve * (Select all that apply)
-                </label>
-                <div className="grid grid-cols-6 md:grid-cols-10 gap-2 mt-2">
-                  {US_STATES.map(state => (
-                    <label key={state} className="flex items-center space-x-1">
-                      <input
-                        type="checkbox"
-                        checked={formData.serviceStates.includes(state)}
-                        onChange={() => handleMultiSelect('serviceStates', state)}
-                        className="form-checkbox text-xs"
-                      />
-                      <span className="text-xs">{state}</span>
-                    </label>
-                  ))}
-                </div>
-                {errors.serviceStates && <p className="form-error">{errors.serviceStates}</p>}
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.isNationwide}
+                      onChange={(e) => handleServiceAreaChange(e.target.checked)}
+                      sx={{
+                        color: 'var(--compliance-orange)',
+                        '&.Mui-checked': {
+                          color: 'var(--compliance-orange)',
+                        },
+                      }}
+                    />
+                  }
+                  label={<Typography variant="body1" fontWeight={600}>I offer nationwide service</Typography>}
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ ml: 4, mt: -1 }}>
+                  Check this if you're willing to travel anywhere in the US for jobs
+                </Typography>
               </div>
 
-              <div>
-                <label className="form-label">
-                  Maximum Travel Distance (Miles) *
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  className={`form-input ${errors.maxTravelDistance ? 'border-red-300' : ''}`}
-                  value={formData.maxTravelDistance}
-                  onChange={(e) => setFormData(prev => ({ ...prev, maxTravelDistance: parseInt(e.target.value) || 0 }))}
-                  placeholder="e.g., 250"
-                  required
-                />
-                <p className="text-sm text-gray-500 mt-1">
-                  How far from your base location are you willing to travel for jobs?
-                </p>
-                {errors.maxTravelDistance && <p className="form-error">{errors.maxTravelDistance}</p>}
-              </div>
+              {!formData.isNationwide && (
+                <div className="cd-grid cd-grid-2 gap-6">
+                  <div>
+                    <label className="form-label">
+                      Service Area Address *
+                    </label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={formData.address}
+                      onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                      placeholder="Your primary service area location"
+                      required
+                    />
+                    <p className="text-sm text-gray-500 mt-1">
+                      Enter the city/area you primarily serve from
+                    </p>
+                  </div>
+
+                  <div>
+                    <FormControl fullWidth error={!!errors.serviceRadius}>
+                      <InputLabel>Travel Radius *</InputLabel>
+                      <Select
+                        value={formData.serviceRadius.toString()}
+                        onChange={(e) => setFormData(prev => ({ ...prev, serviceRadius: parseInt(e.target.value) }))}
+                        label="Travel Radius *"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '8px',
+                          },
+                        }}
+                      >
+                        {TRAVEL_RADIUS_OPTIONS.map((option) => (
+                          <MenuItem key={option.value} value={option.value.toString()}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {errors.serviceRadius && (
+                        <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.75 }}>
+                          {errors.serviceRadius}
+                        </Typography>
+                      )}
+                    </FormControl>
+                  </div>
+                </div>
+              )}
             </section>
 
             {/* Application Essay */}
