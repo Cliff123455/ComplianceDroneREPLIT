@@ -27,14 +27,14 @@
   --color-dark-8: #100d20;
   --color-dark: #030014;
 
-  --color-purple: #8646f4;
-  --color-purple-dark: #6d28d9;
-  --color-purple-dark-2: #5b21b6;
-  --color-purple-light: #a78bfa;
-  --color-purple-light-2: #c4b5fd;
-  --color-purple-light-3: #ddd6fe;
-  --color-purple-light-4: #ede9fe;
-  --color-purple-light-5: #f5f3ff;
+  --color-purple: #64748B;
+  --color-purple-dark: #475569;
+  --color-purple-dark-2: #334155;
+  --color-purple-light: #94A3B8;
+  --color-purple-light-2: #CBD5E1;
+  --color-purple-light-3: #E2E8F0;
+  --color-purple-light-4: #F1F5F9;
+  --color-purple-light-5: #F8FAFC;
 
   --color-pink: #d345f8;
   --color-pink-dark: #c814f6;
@@ -194,9 +194,9 @@
 @utility gradient {
   background-image: linear-gradient(
     90deg,
-    rgba(229, 156, 255, 0.24) 0.01%,
-    rgba(186, 156, 255, 0.24) 50.01%,
-    rgba(156, 178, 255, 0.24) 100%
+    rgba(71, 85, 105, 0.24) 0.01%,
+    rgba(100, 116, 139, 0.24) 50.01%,
+    rgba(148, 163, 184, 0.24) 100%
   );
 }
 
@@ -218,9 +218,9 @@
 @utility gradient-4 {
   background-image: linear-gradient(
     90deg,
-    #e59cff 0.01%,
-    #ba9cff 50.01%,
-    #9cb2ff 100%
+    #64748B 0.01%,
+    #475569 50.01%,
+    #334155 100%
   );
 }
 
@@ -258,7 +258,7 @@
 
 @utility hero-subtitle-text {
   background:
-    -webkit-linear-gradient(90deg, #e59cff 0.01%, #ba9cff 50.01%, #9cb2ff 100%),
+    -webkit-linear-gradient(90deg, #64748B 0.01%, #475569 50.01%, #334155 100%),
     -webkit-linear-gradient(
         0deg,
         rgba(255, 255, 255, 0.4),
@@ -270,7 +270,7 @@
 
 @utility hero-button-gradient {
   box-shadow: 0px -3px 10px 0px #00000040 inset;
-  background: linear-gradient(180deg, #a073ee -11.11%, #6e25ed 100%);
+  background: linear-gradient(180deg, #64748B -11.11%, #475569 100%);
 }
 
 @utility hero-subtitle-gradient {
@@ -434,7 +434,7 @@
 
 @utility pricing-gradient-text {
   background:
-    -webkit-linear-gradient(0deg, #e59cff 0.01%, #ba9cff 50.01%, #9cb2ff 100%),
+    -webkit-linear-gradient(0deg, #64748B 0.01%, #475569 50.01%, #334155 100%),
     -webkit-linear-gradient(
         0deg,
         rgba(255, 255, 255, 0.4),

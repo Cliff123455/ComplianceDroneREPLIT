@@ -26,7 +26,7 @@ const Footer = () => {
           <div className="flex flex-wrap justify-between">
             <div className="mb-10 w-full max-w-[520px]">
               <Link href="/" className="mb-8.5 inline-block">
-                <Image src="/images/compliance-drone-logo.png" alt="ComplianceDrone Logo" width={164} height={36} />
+                <Image src="/images/ComplianceDrone-logo.png" alt="ComplianceDrone Logo" width={200} height={60} />
               </Link>
 
               <p className="mb-12 xl:w-4/5">

@@ -23,6 +23,11 @@ ComplianceDrone.com is a professional thermal inspection platform that uses AI-p
 - Secondary Blue: #64748B (blue-gray light)
 - Accent Grey: #6B7280 (slate blue)
 
+## Design Theme
+- **Main gradient**: Blue-gray theme (replaced purple) - from dark blue-gray (#475569) to light blue-gray (#64748B) to slate (#6B7280)
+- **Logo**: Professional ComplianceDrone banner logo with thermal grid pattern and checkmark
+- **Button gradients**: Blue-gray focused for professional appearance
+
 ## Recent Changes
 - **September 16, 2025**: Initial project setup with professional thermal inspection branding
 - ComplianceDrone homepage with real thermal inspection images
