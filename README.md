@@ -1,24 +1,85 @@
-Welcome to the NextJS base template bootstrapped using the `create-next-app`. This template supports TypeScript, but you can use normal JavaScript as well.
+## Getting Started with Open AI API
 
-## Getting Started
+### For Demo
 
-Hit the run button to start the development server.
+For testing the demo you have to add the api-key.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- Got to /ai-examples
+- Click on the **Set API Key** button
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on `/api/hello`. This endpoint can be edited in `pages/api/hello.ts`.
+![Set Api Key](set-api-key.png)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+And save it.
 
-## Learn More
+Once you are done testing you can remove the key from here:
 
-To learn more about Next.js, take a look at the following resources:
+![Remove Api Key](remove-api-key.png)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### For Developement
 
-## Productionizing your Next App
+For developement you have to save the Api-Key on the .env file with the follwing name
 
-To make your next App run smoothly in production make sure to deploy your project with [Repl Deployments](https://docs.replit.com/hosting/deployments/about-deployments)!
+```
+OPENAI_API_KEY=YOUR_API_KEY
+```
 
-You can also produce a production build by running `npm run build` and [changing the run command](https://docs.replit.com/programming-ide/configuring-repl#run) to `npm run start`.
+### How to change the model?
+
+By default we are using the `gpt-3.5-turbo` model.
+If you want to use other model you can do that too.
+
+To change the model, open up the template in your code editor.
+Then go to the route.ts file under **ai-examples** and add your prefered model
+
+Note: You can find all the model from here: https://platform.openai.com/docs/models/overview
+
+![Change model](change-model.png)
+
+## Installation and Configuration
+
+You must follow the documentation setp by step in this order to do a successful installation and configuration.
+
+### [AI Tool Installation and Config Docs](https://nextjstemplates.com/docs/templates#ai-tool)
+
+---
+
+### Deploying on PaaS
+
+If you are using a GitHub repo then you can go with free-of-cost and easy-to-use options like [Vercel](https://vercel.com/), or [Netlify](https://netlify.com/) they offer decent-free tiers for Next.js hosting.
+
+#### If you are using Prisma ORM (Comes with All Starter Templates)
+
+Make sure to edit build command like this while you use Prisma as ORM while deploying to Vercel.
+
+![prisma-vercel](https://nextjstemplates.com/docs/prisma-vercel.png)
+
+### Update Logs
+
+**March 2025:**
+- Upgraded to TailwindCSS v4 and Next.js v15
+- Removed unused packages and fixed installation issues
+- Optimized font by importing from next/font/google
+- Refactored docs page:
+  - Rewrote sidebar and moved to layout file
+  - Using tailwind-typography plugin for content styles
+  - Fixed responsive issues
+- Proper links for sharing blogs
+
+**November 2024:**
+- Added integrations enable disble features
+- Integrated zod for Form validation
+- Removed package-lock.json file
+
+**February 2024:**
+- Updated Stripe Integraion: Loading pricing data from pricingData file
+
+
+**March 2024:**
+- Upgraded to next 14
+- Fixed auth issues
+- Updated all the packages
+- Update ts config & fix all the issues
+- Update signin & signup page design
+- Integrated Magic link signin &
+- Forgot password
+- Added loader on buttons
