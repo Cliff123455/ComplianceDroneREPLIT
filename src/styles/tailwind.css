@@ -203,16 +203,16 @@
 @utility gradient-2 {
   background-image: linear-gradient(
     90deg,
-    #fc72ff 0%,
-    #8f68ff 25%,
-    #487bff 50%,
-    #2cd9ff 75%,
-    #2cffcc 100%
+    #64748B 0%,
+    #475569 25%,
+    #334155 50%,
+    #1E293B 75%,
+    #0F172A 100%
   );
 }
 
 @utility gradient-3 {
-  background-image: linear-gradient(251.09deg, #701efc 5.04%, #cbb3f3 96.95%);
+  background-image: linear-gradient(251.09deg, #475569 5.04%, #94A3B8 96.95%);
 }
 
 @utility gradient-4 {
@@ -243,17 +243,17 @@
     @apply gradient-border;
     background: linear-gradient(
       90deg,
-      rgba(229, 156, 255, 0.45) 0.01%,
-      rgba(186, 156, 255, 0.45) 50.01%,
-      rgba(156, 178, 255, 0.45) 100%
+      rgba(71, 85, 105, 0.45) 0.01%,
+      rgba(100, 116, 139, 0.45) 50.01%,
+      rgba(148, 163, 184, 0.45) 100%
     );
   }
 }
 
 @utility button-gradient-hover {
   box-shadow:
-    inset 0px -6px 17px rgba(156, 178, 255, 0.3),
-    inset 0px 6px 17px rgba(229, 156, 255, 0.3);
+    inset 0px -6px 17px rgba(148, 163, 184, 0.3),
+    inset 0px 6px 17px rgba(71, 85, 105, 0.3);
 }
 
 @utility hero-subtitle-text {
@@ -291,7 +291,7 @@
 }
 
 @utility hero-subtitle-hover {
-  box-shadow: inset 0 -7px 11px #a48fff3d;
+  box-shadow: inset 0 -7px 11px rgba(100, 116, 139, 0.24);
 }
 
 @utility hero-circle-gradient {
@@ -383,9 +383,9 @@
     @apply gradient-border;
     background: linear-gradient(
       90deg,
-      rgba(229, 156, 255, 0.45) 0.01%,
-      rgba(186, 156, 255, 0.45) 50.01%,
-      rgba(156, 178, 255, 0.45) 100%
+      rgba(71, 85, 105, 0.45) 0.01%,
+      rgba(100, 116, 139, 0.45) 50.01%,
+      rgba(148, 163, 184, 0.45) 100%
     );
   }
 }
