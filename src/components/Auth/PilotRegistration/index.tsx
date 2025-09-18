@@ -9,17 +9,18 @@ import Loader from "@/components/Common/Loader";
 import { integrations, messages } from "../../../../integrations.config";
 import z from "zod";
 import {
-  droneModels,
-  thermalCameraModels,
-  businessTypes,
-  statesAndTerritories,
-  insuranceProviders,
-  experienceLevels,
-  flightHoursRanges,
-  maxTravelDistances
+  careerTypes,
+  daysOfWeek,
+  industries,
+  communicationMethods,
+  referralSources,
+  missionTypes,
+  droneSOFTWARE,
+  airspaceApprovalMethods,
+  flightHoursRanges
 } from "@/data/pilotEquipmentData";
 
-// Comprehensive validation schema for pilot registration
+// Comprehensive validation schema for 23-question pilot questionnaire
 const PilotRegistrationSchema = z.object({
   // Basic user info
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -36,54 +37,41 @@ const PilotRegistrationSchema = z.object({
     .refine((val) => /\d/.test(val), {
       message: "Password must contain at least one number",
     }),
-  
-  // Professional info
   phoneNumber: z.string().min(10, "Please enter a valid phone number"),
-  companyName: z.string().optional(),
-  businessType: z.string().min(1, "Please select a business type"),
   
-  // Address
-  address: z.string().min(5, "Please enter your full address"),
-  city: z.string().min(2, "Please enter your city"),
-  state: z.string().min(2, "Please select your state"),
-  zipCode: z.string().min(5, "Please enter a valid ZIP code"),
-  
-  // Certifications
-  part107Number: z.string().min(1, "Part 107 certificate number is required"),
-  part107ExpiryDate: z.string().min(1, "Please enter your Part 107 expiry date"),
-  thermalExperienceYears: z.string().min(1, "Please select your experience level"),
+  // 23-Question Questionnaire Fields
+  experienceDescription: z.string().min(50, "Please provide at least 50 characters describing your experience"),
   totalFlightHours: z.string().min(1, "Please select your total flight hours"),
-  
-  // Equipment
-  droneModels: z.array(z.string()).min(1, "Please select at least one drone model"),
-  thermalCameraModels: z.array(z.string()).min(1, "Please select at least one thermal camera"),
-  
-  // Insurance
-  hasInsurance: z.boolean(),
-  insuranceProvider: z.string().optional(),
-  insurancePolicyNumber: z.string().optional(),
-  insuranceExpiryDate: z.string().optional(),
-  liabilityCoverage: z.string().optional(),
-  
-  // Service Area
-  maxTravelDistance: z.string().min(1, "Please select your travel distance"),
-  serviceStates: z.array(z.string()).min(1, "Please select at least one service state"),
-  
-  // Application notes
-  applicationNotes: z.string().min(50, "Please provide at least 50 characters about your experience")
+  careerType: z.string().min(1, "Please select your career type"),
+  availableDays: z.array(z.string()).min(1, "Please select at least one available day"),
+  hasOwnBusiness: z.boolean(),
+  companyName: z.string().optional(),
+  pastJobExperience: z.string().min(10, "Please describe your past job experience"),
+  airspaceApprovalExperience: z.string().min(1, "Please describe your airspace approval experience"),
+  industriesExperience: z.array(z.string()).min(1, "Please select at least one industry"),
+  communicationPreferences: z.array(z.string()).min(1, "Please select at least one communication method"),
+  howHeardAboutUs: z.string().min(1, "Please tell us how you heard about us"),
+  preferredMissionType: z.string().min(1, "Please select your preferred mission type"),
+  militaryService: z.boolean(),
+  mannedAircraftLicense: z.boolean(),
+  advancedTraining: z.string().optional(),
+  openToTraining: z.boolean(),
+  softwareExperience: z.array(z.string()).min(1, "Please select at least one software"),
+  emergencySituations: z.string().optional(),
+  willingToTravel: z.boolean(),
+  hasVehicleForTravel: z.string().min(10, "Please describe your vehicle situation"),
+  canChargeBatteriesOnRoad: z.boolean(),
+  teamExperience: z.string().min(10, "Please describe your team experience"),
+  specialProjects: z.string().optional(),
+  worksWithOtherPilots: z.string().min(10, "Please describe your work with other pilots")
 }).refine((data) => {
-  if (data.hasInsurance) {
-    return (
-      data.insuranceProvider && 
-      data.insurancePolicyNumber && 
-      data.insuranceExpiryDate && 
-      data.liabilityCoverage
-    );
+  if (data.hasOwnBusiness) {
+    return data.companyName && data.companyName.length > 0;
   }
   return true;
 }, {
-  message: "Insurance details are required when you have insurance",
-  path: ["insuranceProvider"]
+  message: "Company name is required when you have your own business",
+  path: ["companyName"]
 });
 
 const PilotRegistration = () => {
@@ -93,45 +81,36 @@ const PilotRegistration = () => {
     email: "",
     password: "",
     phoneNumber: "",
-    companyName: "",
-    businessType: "",
     
-    // Address
-    address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    
-    // Certifications
-    part107Number: "",
-    part107ExpiryDate: "",
-    thermalExperienceYears: "",
+    // 23-Question Questionnaire Fields
+    experienceDescription: "",
     totalFlightHours: "",
-    
-    // Equipment
-    droneModels: [] as string[],
-    thermalCameraModels: [] as string[],
-    
-    // Insurance
-    hasInsurance: true,
-    insuranceProvider: "",
-    insurancePolicyNumber: "",
-    insuranceExpiryDate: "",
-    liabilityCoverage: "",
-    
-    // Service Area
-    maxTravelDistance: "",
-    serviceStates: [] as string[],
-    
-    // Application notes
-    applicationNotes: ""
+    careerType: "",
+    availableDays: [] as string[],
+    hasOwnBusiness: false,
+    companyName: "",
+    pastJobExperience: "",
+    airspaceApprovalExperience: "",
+    industriesExperience: [] as string[],
+    communicationPreferences: [] as string[],
+    howHeardAboutUs: "",
+    preferredMissionType: "",
+    militaryService: false,
+    mannedAircraftLicense: false,
+    advancedTraining: "",
+    openToTraining: true,
+    softwareExperience: [] as string[],
+    emergencySituations: "",
+    willingToTravel: true,
+    hasVehicleForTravel: "",
+    canChargeBatteriesOnRoad: true,
+    teamExperience: "",
+    specialProjects: "",
+    worksWithOtherPilots: ""
   });
 
-  const [currentStep, setCurrentStep] = useState(1);
   const [loader, setLoader] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const totalSteps = 5;
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
@@ -147,35 +126,6 @@ const PilotRegistration = () => {
         ? [...(prev[field as keyof typeof prev] as string[]), value]
         : (prev[field as keyof typeof prev] as string[]).filter(item => item !== value)
     }));
-  };
-
-  const validateStep = (step: number): boolean => {
-    switch (step) {
-      case 1:
-        return !!(formData.name && formData.email && formData.password && formData.phoneNumber);
-      case 2:
-        return !!(formData.businessType && formData.address && formData.city && formData.state && formData.zipCode);
-      case 3:
-        return !!(formData.part107Number && formData.part107ExpiryDate && formData.thermalExperienceYears && formData.totalFlightHours);
-      case 4:
-        return !!(formData.droneModels.length > 0 && formData.thermalCameraModels.length > 0);
-      case 5:
-        return !!(formData.maxTravelDistance && formData.serviceStates.length > 0 && formData.applicationNotes.length >= 50);
-      default:
-        return false;
-    }
-  };
-
-  const nextStep = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(prev => Math.min(prev + 1, totalSteps));
-    } else {
-      toast.error("Please fill in all required fields before continuing");
-    }
-  };
-
-  const prevStep = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
   const submitRegistration = async (e: React.FormEvent) => {
@@ -205,28 +155,31 @@ const PilotRegistration = () => {
         email: "",
         password: "",
         phoneNumber: "",
-        companyName: "",
-        businessType: "",
-        address: "",
-        city: "",
-        state: "",
-        zipCode: "",
-        part107Number: "",
-        part107ExpiryDate: "",
-        thermalExperienceYears: "",
+        experienceDescription: "",
         totalFlightHours: "",
-        droneModels: [],
-        thermalCameraModels: [],
-        hasInsurance: true,
-        insuranceProvider: "",
-        insurancePolicyNumber: "",
-        insuranceExpiryDate: "",
-        liabilityCoverage: "",
-        maxTravelDistance: "",
-        serviceStates: [],
-        applicationNotes: ""
+        careerType: "",
+        availableDays: [],
+        hasOwnBusiness: false,
+        companyName: "",
+        pastJobExperience: "",
+        airspaceApprovalExperience: "",
+        industriesExperience: [],
+        communicationPreferences: [],
+        howHeardAboutUs: "",
+        preferredMissionType: "",
+        militaryService: false,
+        mannedAircraftLicense: false,
+        advancedTraining: "",
+        openToTraining: true,
+        softwareExperience: [],
+        emergencySituations: "",
+        willingToTravel: true,
+        hasVehicleForTravel: "",
+        canChargeBatteriesOnRoad: true,
+        teamExperience: "",
+        specialProjects: "",
+        worksWithOtherPilots: ""
       });
-      setCurrentStep(1);
     } catch (error) {
       toast.error("Registration failed. Please check your information and try again.");
     } finally {
@@ -234,476 +187,609 @@ const PilotRegistration = () => {
     }
   };
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <div className="space-y-4">
-            <h3 className="mb-6 text-xl font-semibold text-white">Basic Information</h3>
-            
-            <div className="relative">
-              <span className="absolute left-6 top-1/2 -translate-y-1/2">
-                <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                </svg>
-              </span>
-              <input
-                type="text"
-                placeholder="Full Name *"
-                value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 pl-14.5 pr-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-                required
-              />
-            </div>
-
-            <div className="relative">
-              <span className="absolute left-6 top-1/2 -translate-y-1/2">
-                <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                </svg>
-              </span>
-              <input
-                type="email"
-                placeholder="Email Address *"
-                value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value.toLowerCase())}
-                className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 pl-14.5 pr-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-                required
-              />
-            </div>
-
-            <div className="relative">
-              <span className="absolute left-6 top-1/2 -translate-y-1/2">
-                <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2z" clipRule="evenodd" />
-                </svg>
-              </span>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password *"
-                value={formData.password}
-                onChange={(e) => handleInputChange("password", e.target.value)}
-                className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 pl-14.5 pr-12 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-
-            <div className="relative">
-              <span className="absolute left-6 top-1/2 -translate-y-1/2">
-                <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                </svg>
-              </span>
-              <input
-                type="tel"
-                placeholder="Phone Number *"
-                value={formData.phoneNumber}
-                onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
-                className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 pl-14.5 pr-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-                required
-              />
-            </div>
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-4">
-            <h3 className="mb-6 text-xl font-semibold text-white">Business Information</h3>
-            
-            <input
-              type="text"
-              placeholder="Company/Business Name (optional)"
-              value={formData.companyName}
-              onChange={(e) => handleInputChange("companyName", e.target.value)}
-              className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-            />
-
-            <select
-              value={formData.businessType}
-              onChange={(e) => handleInputChange("businessType", e.target.value)}
-              className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white outline-none focus:border-primary"
-              required
-            >
-              <option value="" className="bg-gray-800">Business Type *</option>
-              {businessTypes.map((type) => (
-                <option key={type} value={type} className="bg-gray-800">
-                  {type}
-                </option>
-              ))}
-            </select>
-
-            <input
-              type="text"
-              placeholder="Street Address *"
-              value={formData.address}
-              onChange={(e) => handleInputChange("address", e.target.value)}
-              className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-              required
-            />
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <input
-                type="text"
-                placeholder="City *"
-                value={formData.city}
-                onChange={(e) => handleInputChange("city", e.target.value)}
-                className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-                required
-              />
-              
-              <select
-                value={formData.state}
-                onChange={(e) => handleInputChange("state", e.target.value)}
-                className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white outline-none focus:border-primary"
-                required
-              >
-                <option value="" className="bg-gray-800">State *</option>
-                {statesAndTerritories.map((state) => (
-                  <option key={state} value={state} className="bg-gray-800">
-                    {state}
-                  </option>
-                ))}
-              </select>
-
-              <input
-                type="text"
-                placeholder="ZIP Code *"
-                value={formData.zipCode}
-                onChange={(e) => handleInputChange("zipCode", e.target.value)}
-                className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-                required
-              />
-            </div>
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-4">
-            <h3 className="mb-6 text-xl font-semibold text-white">Certifications & Experience</h3>
-            
-            <input
-              type="text"
-              placeholder="Part 107 Certificate Number *"
-              value={formData.part107Number}
-              onChange={(e) => handleInputChange("part107Number", e.target.value)}
-              className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-              required
-            />
-
-            <input
-              type="date"
-              placeholder="Part 107 Expiry Date *"
-              value={formData.part107ExpiryDate}
-              onChange={(e) => handleInputChange("part107ExpiryDate", e.target.value)}
-              className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-              required
-            />
-
-            <select
-              value={formData.thermalExperienceYears}
-              onChange={(e) => handleInputChange("thermalExperienceYears", e.target.value)}
-              className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white outline-none focus:border-primary"
-              required
-            >
-              <option value="" className="bg-gray-800">Thermal Imaging Experience *</option>
-              {experienceLevels.map((level) => (
-                <option key={level.value} value={level.value} className="bg-gray-800">
-                  {level.label}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={formData.totalFlightHours}
-              onChange={(e) => handleInputChange("totalFlightHours", e.target.value)}
-              className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white outline-none focus:border-primary"
-              required
-            >
-              <option value="" className="bg-gray-800">Total Flight Hours *</option>
-              {flightHoursRanges.map((range) => (
-                <option key={range.value} value={range.value} className="bg-gray-800">
-                  {range.label}
-                </option>
-              ))}
-            </select>
-
-            <div className="mt-6">
-              <label className="flex items-center space-x-3">
-                <input
-                  type="checkbox"
-                  checked={formData.hasInsurance}
-                  onChange={(e) => handleInputChange("hasInsurance", e.target.checked)}
-                  className="h-4 w-4 rounded border-white/[0.12] bg-transparent text-primary focus:ring-primary"
-                />
-                <span className="text-white">I have liability insurance</span>
-              </label>
-            </div>
-
-            {formData.hasInsurance && (
-              <div className="space-y-4 pl-7">
-                <select
-                  value={formData.insuranceProvider}
-                  onChange={(e) => handleInputChange("insuranceProvider", e.target.value)}
-                  className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white outline-none focus:border-primary"
-                  required
-                >
-                  <option value="" className="bg-gray-800">Insurance Provider *</option>
-                  {insuranceProviders.map((provider) => (
-                    <option key={provider} value={provider} className="bg-gray-800">
-                      {provider}
-                    </option>
-                  ))}
-                </select>
-
-                <input
-                  type="text"
-                  placeholder="Policy Number *"
-                  value={formData.insurancePolicyNumber}
-                  onChange={(e) => handleInputChange("insurancePolicyNumber", e.target.value)}
-                  className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-                  required
-                />
-
-                <input
-                  type="date"
-                  placeholder="Insurance Expiry Date *"
-                  value={formData.insuranceExpiryDate}
-                  onChange={(e) => handleInputChange("insuranceExpiryDate", e.target.value)}
-                  className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary"
-                  required
-                />
-
-                <select
-                  value={formData.liabilityCoverage}
-                  onChange={(e) => handleInputChange("liabilityCoverage", e.target.value)}
-                  className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white outline-none focus:border-primary"
-                  required
-                >
-                  <option value="" className="bg-gray-800">Liability Coverage Amount *</option>
-                  <option value="1000000" className="bg-gray-800">$1,000,000</option>
-                  <option value="2000000" className="bg-gray-800">$2,000,000</option>
-                  <option value="5000000" className="bg-gray-800">$5,000,000</option>
-                  <option value="10000000" className="bg-gray-800">$10,000,000+</option>
-                </select>
-              </div>
-            )}
-          </div>
-        );
-
-      case 4:
-        return (
-          <div className="space-y-6">
-            <h3 className="mb-6 text-xl font-semibold text-white">Equipment</h3>
-            
-            <div>
-              <h4 className="mb-3 text-lg font-medium text-white">Drone Models *</h4>
-              <p className="mb-3 text-sm text-gray-400">Select all drone models you own or operate</p>
-              <div className="max-h-40 overflow-y-auto space-y-2 rounded-lg border border-white/[0.12] p-4">
-                {droneModels.map((drone) => (
-                  <label key={drone} className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      checked={formData.droneModels.includes(drone)}
-                      onChange={(e) => handleArrayChange("droneModels", drone, e.target.checked)}
-                      className="h-4 w-4 rounded border-white/[0.12] bg-transparent text-primary focus:ring-primary"
-                    />
-                    <span className="text-white text-sm">{drone}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="mb-3 text-lg font-medium text-white">Thermal Camera Models *</h4>
-              <p className="mb-3 text-sm text-gray-400">Select all thermal cameras you own or have access to</p>
-              <div className="max-h-40 overflow-y-auto space-y-2 rounded-lg border border-white/[0.12] p-4">
-                {thermalCameraModels.map((camera) => (
-                  <label key={camera} className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      checked={formData.thermalCameraModels.includes(camera)}
-                      onChange={(e) => handleArrayChange("thermalCameraModels", camera, e.target.checked)}
-                      className="h-4 w-4 rounded border-white/[0.12] bg-transparent text-primary focus:ring-primary"
-                    />
-                    <span className="text-white text-sm">{camera}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
-
-      case 5:
-        return (
-          <div className="space-y-6">
-            <h3 className="mb-6 text-xl font-semibold text-white">Service Area & Application</h3>
-            
-            <select
-              value={formData.maxTravelDistance}
-              onChange={(e) => handleInputChange("maxTravelDistance", e.target.value)}
-              className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white outline-none focus:border-primary"
-              required
-            >
-              <option value="" className="bg-gray-800">Maximum Travel Distance *</option>
-              {maxTravelDistances.map((distance) => (
-                <option key={distance.value} value={distance.value} className="bg-gray-800">
-                  {distance.label}
-                </option>
-              ))}
-            </select>
-
-            <div>
-              <h4 className="mb-3 text-lg font-medium text-white">Service States *</h4>
-              <p className="mb-3 text-sm text-gray-400">Select all states where you can provide services</p>
-              <div className="max-h-40 overflow-y-auto space-y-2 rounded-lg border border-white/[0.12] p-4">
-                {statesAndTerritories.map((state) => (
-                  <label key={state} className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      checked={formData.serviceStates.includes(state)}
-                      onChange={(e) => handleArrayChange("serviceStates", state, e.target.checked)}
-                      className="h-4 w-4 rounded border-white/[0.12] bg-transparent text-primary focus:ring-primary"
-                    />
-                    <span className="text-white text-sm">{state}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="mb-3 block text-lg font-medium text-white">
-                Tell us about your experience *
-              </label>
-              <p className="mb-3 text-sm text-gray-400">
-                Describe your experience with thermal imaging, drone operations, or relevant technical background (minimum 50 characters)
-              </p>
-              <textarea
-                rows={6}
-                placeholder="Please describe your relevant experience, previous thermal inspection work, technical background, or why you're interested in joining our pilot network..."
-                value={formData.applicationNotes}
-                onChange={(e) => handleInputChange("applicationNotes", e.target.value)}
-                className="w-full rounded-lg border border-white/[0.12] bg-transparent py-3.5 px-4 font-medium text-white placeholder-gray-400 outline-none focus:border-primary resize-none"
-                required
-              />
-              <p className="mt-1 text-xs text-gray-400">
-                {formData.applicationNotes.length}/50 characters minimum
-              </p>
-            </div>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
-
   return (
-    <>
-      <section className="pb-17.5 pt-17.5 lg:pb-22.5 xl:pb-27.5">
-        <div className="mx-auto max-w-[1170px] px-4 sm:px-8 xl:px-0">
-          <div className="wow fadeInUp rounded-3xl bg-white/[0.05]">
-            <div className="flex">
-              <div className="hidden w-full lg:block lg:w-1/2">
-                <div className="relative py-20 pl-17.5 pr-22">
-                  <div className="absolute right-0 top-0 h-full w-[1px] bg-gradient-to-b from-white/0 via-white/20 to-white/0"></div>
+    <section className="bg-gray-2 py-20 dark:bg-dark-2 lg:py-25">
+      <div className="container">
+        <div className="mx-auto max-w-[800px]">
+          <div className="wow fadeInUp rounded-lg bg-white px-8 py-12 shadow-form dark:bg-dark-3 dark:shadow-box-dark sm:px-12">
+            <div className="mb-9 text-center">
+              <h2 className="mb-3 text-2xl font-bold text-dark dark:text-white sm:text-3xl">
+                Pilot Registration Questionnaire
+              </h2>
+              <p className="text-base text-body-color dark:text-dark-6">
+                Please complete all sections of this comprehensive questionnaire to apply as a pilot for ComplianceDrone.
+              </p>
+            </div>
 
-                  <h2 className="mb-6 max-w-[292px] text-heading-4 font-bold text-white">
-                    Join the ComplianceDrone Pilot Network
-                  </h2>
-                  <p className="mb-8 max-w-[350px] text-white/80">
-                    Professional thermal inspection pilots earn competitive rates using cutting-edge drone technology.
-                  </p>
-                  
-                  {/* Progress indicator */}
-                  <div className="mb-8">
-                    <div className="flex items-center space-x-2 mb-4">
-                      {Array.from({ length: totalSteps }, (_, i) => (
-                        <div
-                          key={i}
-                          className={`h-2 flex-1 rounded-full ${
-                            i + 1 <= currentStep ? 'bg-primary' : 'bg-white/20'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-sm text-white/70">
-                      Step {currentStep} of {totalSteps}
-                    </p>
+            <form onSubmit={submitRegistration} className="space-y-6">
+              {/* Basic Information Section */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-dark dark:text-white">Basic Information</h3>
+                
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="relative">
+                    <span className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                      </svg>
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Full Name *"
+                      value={formData.name}
+                      onChange={(e) => handleInputChange("name", e.target.value)}
+                      className="w-full rounded-lg border border-stroke bg-transparent py-3.5 pl-14.5 pr-4 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                      required
+                    />
                   </div>
 
-                  <div className="relative aspect-square w-full max-w-[300px]">
-                    <Image 
-                      src="/images/thermal-inspection-main.jpg" 
-                      alt="Thermal inspection" 
-                      fill 
-                      className="rounded-lg object-cover"
+                  <div className="relative">
+                    <span className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                      </svg>
+                    </span>
+                    <input
+                      type="email"
+                      placeholder="Email Address *"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange("email", e.target.value.toLowerCase())}
+                      className="w-full rounded-lg border border-stroke bg-transparent py-3.5 pl-14.5 pr-4 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="relative">
+                    <span className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2z" clipRule="evenodd" />
+                      </svg>
+                    </span>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password *"
+                      value={formData.password}
+                      onChange={(e) => handleInputChange("password", e.target.value)}
+                      className="w-full rounded-lg border border-stroke bg-transparent py-3.5 pl-14.5 pr-12 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary"
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                  </div>
+
+                  <div className="relative">
+                    <span className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                      </svg>
+                    </span>
+                    <input
+                      type="tel"
+                      placeholder="Phone Number *"
+                      value={formData.phoneNumber}
+                      onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+                      className="w-full rounded-lg border border-stroke bg-transparent py-3.5 pl-14.5 pr-4 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                      required
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="w-full lg:w-1/2">
-                <div className="py-8 pl-8 pr-8 sm:py-20 sm:pl-21 sm:pr-20">
-                  <form onSubmit={submitRegistration}>
-                    {renderStep()}
+              {/* Questionnaire Section */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold text-dark dark:text-white">Pilot Questionnaire</h3>
+                
+                {/* Question 1: Experience Description */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    1. In your own words, how would you describe your experience in the drone industry? *
+                  </label>
+                  <textarea
+                    value={formData.experienceDescription}
+                    onChange={(e) => handleInputChange("experienceDescription", e.target.value)}
+                    className="h-32 w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                    placeholder="Describe your experience, certifications, and expertise..."
+                    required
+                  />
+                </div>
 
-                    <div className="mt-8 flex justify-between space-x-4">
-                      {currentStep > 1 && (
-                        <button
-                          type="button"
-                          onClick={prevStep}
-                          className="flex items-center justify-center rounded-lg border border-white/20 px-6 py-3 font-medium text-white transition-colors hover:bg-white/10"
-                        >
-                          Previous
-                        </button>
-                      )}
-                      
-                      <div className="flex-1"></div>
-                      
-                      {currentStep < totalSteps ? (
-                        <button
-                          type="button"
-                          onClick={nextStep}
-                          className="hero-button-gradient flex items-center justify-center rounded-lg px-6 py-3 font-medium text-white duration-300 ease-in hover:opacity-80"
-                        >
-                          Next Step
-                        </button>
-                      ) : (
-                        <button
-                          type="submit"
-                          disabled={loader}
-                          className="hero-button-gradient flex items-center justify-center rounded-lg px-6 py-3 font-medium text-white duration-300 ease-in hover:opacity-80 disabled:opacity-50"
-                        >
-                          Submit Application {loader && <Loader />}
-                        </button>
-                      )}
+                {/* Question 2: Flight Hours */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    2. How many total drone flight hours have you flown? *
+                  </label>
+                  <select
+                    value={formData.totalFlightHours}
+                    onChange={(e) => handleInputChange("totalFlightHours", e.target.value)}
+                    className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
+                    required
+                  >
+                    <option value="" className="bg-white dark:bg-dark-3">Select flight hours</option>
+                    {flightHoursRanges.map((range) => (
+                      <option key={range.value} value={range.value} className="bg-white dark:bg-dark-3">
+                        {range.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Question 3: Career Type */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    3. What would you consider your drone career to be? *
+                  </label>
+                  <select
+                    value={formData.careerType}
+                    onChange={(e) => handleInputChange("careerType", e.target.value)}
+                    className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
+                    required
+                  >
+                    <option value="" className="bg-white dark:bg-dark-3">Select career type</option>
+                    {careerTypes.map((type) => (
+                      <option key={type} value={type} className="bg-white dark:bg-dark-3">
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Question 4: Available Days */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    4. What days are best for you for flying missions? *
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {daysOfWeek.map((day) => (
+                      <label key={day} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.availableDays.includes(day)}
+                          onChange={(e) => handleArrayChange("availableDays", day, e.target.checked)}
+                          className="h-4 w-4 rounded border-stroke text-primary focus:ring-primary dark:border-dark-4"
+                        />
+                        <span className="text-sm text-dark dark:text-white">{day}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Question 5: Own Business */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    5. Do you currently have your own drone business? *
+                  </label>
+                  <div className="space-y-3">
+                    <div className="flex space-x-6">
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="hasOwnBusiness"
+                          checked={formData.hasOwnBusiness === true}
+                          onChange={() => handleInputChange("hasOwnBusiness", true)}
+                          className="h-4 w-4 text-primary focus:ring-primary"
+                        />
+                        <span className="text-sm text-dark dark:text-white">Yes</span>
+                      </label>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="hasOwnBusiness"
+                          checked={formData.hasOwnBusiness === false}
+                          onChange={() => handleInputChange("hasOwnBusiness", false)}
+                          className="h-4 w-4 text-primary focus:ring-primary"
+                        />
+                        <span className="text-sm text-dark dark:text-white">No</span>
+                      </label>
                     </div>
-                  </form>
+                    {formData.hasOwnBusiness && (
+                      <input
+                        type="text"
+                        placeholder="Company Name *"
+                        value={formData.companyName}
+                        onChange={(e) => handleInputChange("companyName", e.target.value)}
+                        className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                        required
+                      />
+                    )}
+                  </div>
+                </div>
 
-                  <p className="mt-6 text-center font-medium text-white">
-                    Already have an account?{" "}
-                    <Link href="/auth/signin" className="text-primary hover:underline">
-                      Sign in Here
-                    </Link>
-                  </p>
+                {/* Question 6: Past Job Experience */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    6. What is your current full-time/past job experience outside of UAS? *
+                  </label>
+                  <textarea
+                    value={formData.pastJobExperience}
+                    onChange={(e) => handleInputChange("pastJobExperience", e.target.value)}
+                    className="h-24 w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                    placeholder="e.g., Construction Manager, Master Electrician, etc."
+                    required
+                  />
+                </div>
+
+                {/* Question 7: Airspace Approval */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    7. In what ways have you applied for airspace approval? *
+                  </label>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {airspaceApprovalMethods.map((method) => (
+                      <label key={method} className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="airspaceApprovalExperience"
+                          checked={formData.airspaceApprovalExperience === method}
+                          onChange={() => handleInputChange("airspaceApprovalExperience", method)}
+                          className="h-4 w-4 text-primary focus:ring-primary"
+                        />
+                        <span className="text-sm text-dark dark:text-white">{method}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Question 8: Industries Experience */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    8. What industries do you have experience flying drones in? *
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {industries.map((industry) => (
+                      <label key={industry} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.industriesExperience.includes(industry)}
+                          onChange={(e) => handleArrayChange("industriesExperience", industry, e.target.checked)}
+                          className="h-4 w-4 rounded border-stroke text-primary focus:ring-primary dark:border-dark-4"
+                        />
+                        <span className="text-sm text-dark dark:text-white">{industry}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Question 9: Communication Preferences */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    9. What is your preferred method of communication? *
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {communicationMethods.map((method) => (
+                      <label key={method} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.communicationPreferences.includes(method)}
+                          onChange={(e) => handleArrayChange("communicationPreferences", method, e.target.checked)}
+                          className="h-4 w-4 rounded border-stroke text-primary focus:ring-primary dark:border-dark-4"
+                        />
+                        <span className="text-sm text-dark dark:text-white">{method}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Question 10: How heard about us */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    10. How did you hear about us? *
+                  </label>
+                  <select
+                    value={formData.howHeardAboutUs}
+                    onChange={(e) => handleInputChange("howHeardAboutUs", e.target.value)}
+                    className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
+                    required
+                  >
+                    <option value="" className="bg-white dark:bg-dark-3">Select source</option>
+                    {referralSources.map((source) => (
+                      <option key={source} value={source} className="bg-white dark:bg-dark-3">
+                        {source}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Question 11: Mission Type */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    11. What type of drone mission are you most interested in? *
+                  </label>
+                  <select
+                    value={formData.preferredMissionType}
+                    onChange={(e) => handleInputChange("preferredMissionType", e.target.value)}
+                    className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
+                    required
+                  >
+                    <option value="" className="bg-white dark:bg-dark-3">Select mission type</option>
+                    {missionTypes.map((type) => (
+                      <option key={type} value={type} className="bg-white dark:bg-dark-3">
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Question 12: Military Service */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    12. Do you currently or have you previously served in the military? *
+                  </label>
+                  <div className="flex space-x-6">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="militaryService"
+                        checked={formData.militaryService === true}
+                        onChange={() => handleInputChange("militaryService", true)}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-dark dark:text-white">Yes</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="militaryService"
+                        checked={formData.militaryService === false}
+                        onChange={() => handleInputChange("militaryService", false)}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-dark dark:text-white">No</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Question 13: Manned Aircraft License */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    13. Do you have a manned aircraft license? *
+                  </label>
+                  <div className="flex space-x-6">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="mannedAircraftLicense"
+                        checked={formData.mannedAircraftLicense === true}
+                        onChange={() => handleInputChange("mannedAircraftLicense", true)}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-dark dark:text-white">Yes</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="mannedAircraftLicense"
+                        checked={formData.mannedAircraftLicense === false}
+                        onChange={() => handleInputChange("mannedAircraftLicense", false)}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-dark dark:text-white">No</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Question 14: Advanced Training */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    14. Do you have any advanced training or education pertaining to UAS?
+                  </label>
+                  <textarea
+                    value={formData.advancedTraining}
+                    onChange={(e) => handleInputChange("advancedTraining", e.target.value)}
+                    className="h-24 w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                    placeholder="e.g., Level 1 Drone Thermographer, specific courses, etc."
+                  />
+                </div>
+
+                {/* Question 15: Open to Training */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    15. Are you open to participating in training or workshops to enhance your skills? *
+                  </label>
+                  <div className="flex space-x-6">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="openToTraining"
+                        checked={formData.openToTraining === true}
+                        onChange={() => handleInputChange("openToTraining", true)}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-dark dark:text-white">Yes</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="openToTraining"
+                        checked={formData.openToTraining === false}
+                        onChange={() => handleInputChange("openToTraining", false)}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-dark dark:text-white">No</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Question 16: Software Experience */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    16. Of the following software, what do you have experience with? *
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {droneSOFTWARE.map((software) => (
+                      <label key={software} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.softwareExperience.includes(software)}
+                          onChange={(e) => handleArrayChange("softwareExperience", software, e.target.checked)}
+                          className="h-4 w-4 rounded border-stroke text-primary focus:ring-primary dark:border-dark-4"
+                        />
+                        <span className="text-sm text-dark dark:text-white">{software}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Question 17: Emergency Situations */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    17. Have you faced any challenging or emergency situations during drone operations, and if so, how did you address them?
+                  </label>
+                  <textarea
+                    value={formData.emergencySituations}
+                    onChange={(e) => handleInputChange("emergencySituations", e.target.value)}
+                    className="h-24 w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                    placeholder="Describe any challenging situations and how you handled them..."
+                  />
+                </div>
+
+                {/* Question 18: Willing to Travel */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    18. Are you willing to travel away from home if we have a multiple-day project? *
+                  </label>
+                  <div className="flex space-x-6">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="willingToTravel"
+                        checked={formData.willingToTravel === true}
+                        onChange={() => handleInputChange("willingToTravel", true)}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-dark dark:text-white">Yes</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="willingToTravel"
+                        checked={formData.willingToTravel === false}
+                        onChange={() => handleInputChange("willingToTravel", false)}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-dark dark:text-white">No</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Question 19: Vehicle for Travel */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    19. Do you have a vehicle fit for being on the road for lengths at a time? *
+                  </label>
+                  <textarea
+                    value={formData.hasVehicleForTravel}
+                    onChange={(e) => handleInputChange("hasVehicleForTravel", e.target.value)}
+                    className="h-24 w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                    placeholder="e.g., Yes, Ram 2021 with job box and interior laptop and screen mount for flying."
+                    required
+                  />
+                </div>
+
+                {/* Question 20: Battery Charging */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    20. Are you able to charge batteries on the road? *
+                  </label>
+                  <div className="flex space-x-6">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="canChargeBatteriesOnRoad"
+                        checked={formData.canChargeBatteriesOnRoad === true}
+                        onChange={() => handleInputChange("canChargeBatteriesOnRoad", true)}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-dark dark:text-white">Yes</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="canChargeBatteriesOnRoad"
+                        checked={formData.canChargeBatteriesOnRoad === false}
+                        onChange={() => handleInputChange("canChargeBatteriesOnRoad", false)}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-dark dark:text-white">No</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Question 21: Team Experience */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    21. Do you have experience working with a team of pilots for an extended project? *
+                  </label>
+                  <textarea
+                    value={formData.teamExperience}
+                    onChange={(e) => handleInputChange("teamExperience", e.target.value)}
+                    className="h-24 w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                    placeholder="e.g., Yes, currently managing pilots on projects across different locations."
+                    required
+                  />
+                </div>
+
+                {/* Question 22: Special Projects */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    22. If you have worked on a special project, tell us about it.
+                  </label>
+                  <textarea
+                    value={formData.specialProjects}
+                    onChange={(e) => handleInputChange("specialProjects", e.target.value)}
+                    className="h-24 w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                    placeholder="Describe any special projects you've worked on..."
+                  />
+                </div>
+
+                {/* Question 23: Works with Other Pilots */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-dark dark:text-white">
+                    23. Do you work regularly with other drone pilots? *
+                  </label>
+                  <textarea
+                    value={formData.worksWithOtherPilots}
+                    onChange={(e) => handleInputChange("worksWithOtherPilots", e.target.value)}
+                    className="h-24 w-full rounded-lg border border-stroke bg-transparent px-4 py-3 font-medium text-dark placeholder-dark-5 outline-none focus:border-primary dark:border-dark-4 dark:bg-dark-3 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                    placeholder="e.g., Yes, collaborating with pilots on various projects."
+                    required
+                  />
                 </div>
               </div>
-            </div>
+
+              <div className="flex items-center justify-between">
+                <button
+                  type="submit"
+                  disabled={loader}
+                  className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-8 py-4 font-semibold text-white transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50"
+                >
+                  {loader ? <Loader /> : "Submit Application"}
+                </button>
+              </div>
+
+              <div className="mt-6 text-center">
+                <p className="text-base text-body-color dark:text-dark-6">
+                  Already have an account?{" "}
+                  <Link
+                    href="/auth/signin"
+                    className="text-primary hover:underline"
+                  >
+                    Sign in here
+                  </Link>
+                </p>
+              </div>
+            </form>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

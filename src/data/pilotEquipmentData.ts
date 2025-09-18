@@ -144,3 +144,101 @@ export const maxTravelDistances = [
   { value: "500", label: "500 miles" },
   { value: "nationwide", label: "Nationwide travel" }
 ];
+
+// Additional data for comprehensive questionnaire
+
+export const careerTypes = [
+  "Full-time",
+  "Part-time",
+  "Hobby/Recreation",
+  "Seasonal"
+];
+
+export const daysOfWeek = [
+  "Sunday",
+  "Monday", 
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday"
+];
+
+export const industries = [
+  "Agriculture",
+  "Construction", 
+  "Real Estate",
+  "Utilities",
+  "Oil & Gas",
+  "Renewable Energy",
+  "Surveying / Mapping",
+  "Search & Rescue",
+  "Public Safety",
+  "Insurance",
+  "Entertainment",
+  "Research",
+  "Other"
+];
+
+export const communicationMethods = [
+  "Email",
+  "Phone Call", 
+  "Text",
+  "Video Call",
+  "In-Person Meeting"
+];
+
+export const referralSources = [
+  "Search Engine",
+  "Social Media",
+  "Word of Mouth",
+  "Industry Publication",
+  "Trade Show/Conference",
+  "Partner Referral",
+  "Direct Contact",
+  "Other"
+];
+
+export const missionTypes = [
+  "Thermal Inspections",
+  "Solar Panel Inspections", 
+  "Building Inspections",
+  "Infrastructure Inspections",
+  "Power Line Inspections",
+  "Oil & Gas Inspections",
+  "Agricultural Monitoring",
+  "Construction Progress",
+  "Real Estate Photography",
+  "Search & Rescue",
+  "Other"
+];
+
+export const droneSOFTWARE = [
+  "DJI Go 4",
+  "DJI Pilot 2",
+  "DJI Flight Hub 2",
+  "Drone Deploy",
+  "Pix4D Capture",
+  "Pix4D Mapper",
+  "Litchi",
+  "Adobe Photoshop",
+  "Adobe Premiere Pro",
+  "Adobe Lightroom",
+  "FLIR Tools",
+  "FLIR Research Studio",
+  "Thermal Capture",
+  "Site Scan for ArcGIS",
+  "Propeller Aero",
+  "Other"
+];
+
+export const airspaceApprovalMethods = [
+  "LAANC Authorization",
+  "Part 107 Waiver",
+  "Sectional Chart Review",
+  "NOTAM Filing",
+  "Airport Coordination",
+  "Military Base Coordination",
+  "None - Only in Class G airspace",
+  "Other"
+];

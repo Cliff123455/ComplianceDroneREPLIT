@@ -99,6 +99,30 @@ export const pilotProfiles = pgTable("pilot_profiles", {
   notes: text("notes"), // Admin notes
   applicationNotes: text("application_notes"), // Pilot's application essay/notes
   
+  // Comprehensive Questionnaire Fields (23 questions)
+  experienceDescription: text("experience_description"), // Q1: Experience in drone industry
+  careerType: varchar("career_type"), // Q3: Full-time/Part-time/etc
+  availableDays: jsonb("available_days").$type<string[]>(), // Q4: Days available for missions
+  hasOwnBusiness: boolean("has_own_business").default(false), // Q5: Own drone business
+  pastJobExperience: text("past_job_experience"), // Q6: Job experience outside UAS
+  airspaceApprovalExperience: text("airspace_approval_experience"), // Q7: Airspace approval methods
+  industriesExperience: jsonb("industries_experience").$type<string[]>(), // Q8: Industries experienced in
+  communicationPreferences: jsonb("communication_preferences").$type<string[]>(), // Q9: Preferred communication
+  howHeardAboutUs: varchar("how_heard_about_us"), // Q10: How they heard about us
+  preferredMissionType: varchar("preferred_mission_type"), // Q11: Type of missions interested in
+  militaryService: boolean("military_service").default(false), // Q12: Military service
+  mannedAircraftLicense: boolean("manned_aircraft_license").default(false), // Q13: Manned aircraft license
+  advancedTraining: text("advanced_training"), // Q14: Advanced UAS training/education
+  openToTraining: boolean("open_to_training").default(true), // Q15: Open to training/workshops
+  softwareExperience: jsonb("software_experience").$type<string[]>(), // Q16: Software experience
+  emergencySituations: text("emergency_situations"), // Q17: Emergency situations handled
+  willingToTravel: boolean("willing_to_travel").default(true), // Q18: Willing to travel for projects
+  hasVehicleForTravel: text("has_vehicle_for_travel"), // Q19: Vehicle suitable for travel
+  canChargeBatteriesOnRoad: boolean("can_charge_batteries_on_road").default(true), // Q20: Battery charging capability
+  teamExperience: text("team_experience"), // Q21: Experience working with pilot teams
+  specialProjects: text("special_projects"), // Q22: Special projects worked on
+  worksWithOtherPilots: text("works_with_other_pilots"), // Q23: Working with other pilots
+  
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

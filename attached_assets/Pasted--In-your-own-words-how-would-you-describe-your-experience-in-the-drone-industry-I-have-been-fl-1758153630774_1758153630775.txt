@@ -1,0 +1,47 @@
+•	In your own words, how would you describe your experience in the drone industry?
+* I have been flying drones since 2007 with a focus on using the M300 infrared and high-resolution payload to inspect PV plants. I recently developed a Python script to assist with flight planning and creating efficient flight routes for inspecting PV plants and localizing thermal issues.
+•	How many total drone flight hours have you flown?
+* Over 500 hours.
+•	What would you consider your drone career to be?
+* Full-time
+•	What days are best for you for flying missions?
+* Sunday, Saturday, Monday, Tuesday, Wednesday, Thursday, Friday
+•	Do you currently have your own drone business?
+* Yes
+Company name: Automate Solar.com
+•	What is your current full-time/past job experience outside of UAS? For example, Dentist/Construction Site Manager/Entertainment/Law Enforcement/Student
+* Construction Manager, Master Electrician, Utility Scale Solar Power Plants for the last 10 years with smaller passion projects in the Caribbean.
+•	In what ways have you applied for airspace approval?
+* None
+•	What industries do you have experience flying drones in?
+* Utilities, Construction, Surveying / Mapping, Renewable Energy
+•	What is your preferred method of communication?
+* Text, Phone Call, Email
+10. How did you hear about us?
+* Search Engine
+11. What type of drone mission are you most interested in?
+* Thermal Inspections
+12. Do you currently or have you previously served in the military?
+* No
+13. Do you have a manned aircraft license?
+* No
+14. Do you have any advanced training or education pertaining to UAS?
+* Level 1 Drone Thermographer
+15. Are you open to participating in training or workshops to enhance your skills and stay current with industry developments?
+* Yes
+16. Of the following software, what do you have experience with?
+* DJI Go 4, DJI Pilot 2, Drone Deploy, Pix4D Capture, Adobe Photoshop, Adobe Premiere Pro
+17. Have you faced any challenging or emergency situations during drone operations, and if so, how did you address them?
+* No
+18. Are you willing to travel away from home if we have a multiple-day project/contract/portfolio of sites?
+* Yes
+19. Do you have a vehicle fit for being on the road for lengths at a time?
+* Yes, Ram 2021 with job box and interior laptop and screen mount for flying.
+20. Are you able to charge batteries on the road?
+* Yes
+21. Do you have experience working with a team of pilots for an extended project?
+* Yes, currently managing pilots on projects across different locations.
+22. If you have worked on a special project, tell us about it.
+* Unable to share details due to NDA.
+23. Do you work regularly with other drone pilots?
+* Yes, collaborating with pilots on various projects.
