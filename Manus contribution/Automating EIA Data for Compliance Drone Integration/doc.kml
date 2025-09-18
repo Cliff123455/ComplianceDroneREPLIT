@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Planned Solar Power Plants for 2025.csv</name>
+	<Schema name="Planned Solar Power Plants for 2025" id="S_Planned_Solar_Power_Plants_for_2025_ISISSSSSSSSSDDDSSSIISDD">
+		<SimpleField type="int" name="Entity_ID"><displayName>&lt;b&gt;Entity ID&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Entity_Name"><displayName>&lt;b&gt;Entity Name&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="int" name="Plant_ID"><displayName>&lt;b&gt;Plant ID&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Plant_Name"><displayName>&lt;b&gt;Plant Name&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Google_Map"><displayName>&lt;b&gt;Google Map&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Bing_Map"><displayName>&lt;b&gt;Bing Map&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Plant_State"><displayName>&lt;b&gt;Plant State&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="County"><displayName>&lt;b&gt;County&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Balancing_Authority_Code"><displayName>&lt;b&gt;Balancing Authority Code&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Sector"><displayName>&lt;b&gt;Sector&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Generator_ID"><displayName>&lt;b&gt;Generator ID&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Unit_Code"><displayName>&lt;b&gt;Unit Code&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Nameplate_Capacity__MW_"><displayName>&lt;b&gt;Nameplate Capacity (MW)&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Net_Summer_Capacity__MW_"><displayName>&lt;b&gt;Net Summer Capacity (MW)&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Net_Winter_Capacity__MW_"><displayName>&lt;b&gt;Net Winter Capacity (MW)&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Technology"><displayName>&lt;b&gt;Technology&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Energy_Source_Code"><displayName>&lt;b&gt;Energy Source Code&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Prime_Mover_Code"><displayName>&lt;b&gt;Prime Mover Code&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="int" name="Planned_Operation_Month"><displayName>&lt;b&gt;Planned Operation Month&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="int" name="Planned_Operation_Year"><displayName>&lt;b&gt;Planned Operation Year&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="Status"><displayName>&lt;b&gt;Status&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Latitude"><displayName>&lt;b&gt;Latitude&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Longitude"><displayName>&lt;b&gt;Longitude&lt;/b&gt;</displayName>
