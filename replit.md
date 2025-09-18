@@ -1,7 +1,7 @@
 # ComplianceDrone.com - Thermal Inspection Platform
 
 ## Overview
-ComplianceDrone.com is a professional thermal inspection platform that uses AI-powered drone technology to detect thermal anomalies in solar installations and electrical infrastructure. The platform processes 100+ thermal images and generates comprehensive PDF reports in under 5 minutes.
+ComplianceDrone.com is a professional thermal inspection platform that uses AI-powered drone technology to detect thermal anomalies in solar installations and electrical infrastructure. The platform processes 100's of thermal images in seconds and generates comprehensive PDF reports in under 5 minutes.
 
 ## Project Architecture
 - **Frontend**: Next.js 15 with TypeScript and Tailwind CSS
