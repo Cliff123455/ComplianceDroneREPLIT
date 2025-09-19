@@ -5,7 +5,7 @@ const CallToAction = () => {
   return (
     <section>
       <div className="mx-auto max-w-[1170px] px-4 sm:px-8 xl:px-0">
-        <div className="cta-box-gradient relative z-999 overflow-hidden rounded-[30px] bg-dark px-4 py-20 lg:py-25">
+        <div className="cta-box-gradient relative z-999 overflow-hidden rounded-[30px] bg-gradient-to-r from-[#0b172a] via-[#14213d] to-[#1d3557] px-4 py-20 lg:py-25">
           {/* <!-- bg shapes --> */}
 
           <div className="absolute bottom-0 left-0 -z-1 h-full w-full bg-[url(/images/cta/grid.svg)] bg-cover bg-bottom bg-no-repeat"></div>
@@ -52,22 +52,22 @@ const CallToAction = () => {
                 height={16}
               />
 
-              <span className="hero-subtitle-text">Try our tool for Free</span>
+              <span className="hero-subtitle-text">Schedule a Compliance Demo</span>
             </span>
             <h2 className="mb-4.5 text-2xl font-extrabold text-white sm:text-4xl xl:text-heading-2">
-              What are you waiting for?
+              Deploy ComplianceDrone for Your Next Inspection
             </h2>
             <p className="mx-auto mb-9 max-w-[714px] font-medium">
-              Build SaaS AI applications using OpenAI and Next.js, this kit
-              comes with pre-configured and pre-built examples, making it easier
-              to quickly kickstart your AI startup.
+              Give your asset managers access to annotated imagery, exception summaries, and compliance-ready reports in minutes.
+              Automate anomaly detection, task routing, and PDF delivery with your existing flight data.
+              Launch with real pilots and enterprise workflows already built in.
             </p>
 
             <Link
-              href="/"
+              href="/contact"
               className="hero-button-gradient inline-flex rounded-lg px-7 py-3 font-medium text-white duration-300 ease-in hover:opacity-80"
             >
-              Get Started for Free
+              Book a Demo Call
             </Link>
           </div>
         </div>
@@ -77,3 +77,4 @@ const CallToAction = () => {
 };
 
 export default CallToAction;
+

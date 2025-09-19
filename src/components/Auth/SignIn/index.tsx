@@ -59,7 +59,12 @@ const Signin = () => {
     setLoader(true);
     signIn("credentials", { ...data, redirect: false }).then(async (callback) => {
       if (callback?.error) {
-        toast.error(callback.error);
+        const message =
+          typeof callback.error === "string"
+            ? callback.error
+            : "Unable to sign in. Please try again.";
+
+        toast.error(message);
         setLoader(false);
         return;
       }
@@ -274,3 +279,4 @@ const Signin = () => {
 };
 
 export default Signin;
+

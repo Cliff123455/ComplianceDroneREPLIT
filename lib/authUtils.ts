@@ -1,5 +1,5 @@
 // Authentication utilities for error handling and validation
-// Based on Replit Auth integration
+// Based on NextAuth session handling
 
 export function isUnauthorizedError(error: Error): boolean {
   return /^401: .*Unauthorized/.test(error.message) || 
@@ -19,7 +19,7 @@ export function handleUnauthorizedError(error: Error, showToast?: (message: { ti
     }
     
     setTimeout(() => {
-      window.location.href = "/api/login";
+      window.location.href = "/auth/signin";
     }, 500);
     
     return true;
