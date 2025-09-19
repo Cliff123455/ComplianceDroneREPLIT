@@ -9,6 +9,8 @@ import {
   jsonb,
   pgEnum,
   pgTable,
+  serial,
+  uniqueIndex,
   text,
   timestamp,
   varchar,
@@ -127,35 +129,67 @@ export const pilotProfiles = pgTable("pilot_profiles", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Jobs table - Thermal inspection jobs
-export const jobs = pgTable("jobs", {
+// Legacy inspection jobs table - retains existing job board features
+export const inspectionJobs = pgTable("inspection_jobs", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   clientUserId: varchar("client_user_id").references(() => users.id),
   assignedPilotId: varchar("assigned_pilot_id").references(() => pilotProfiles.id),
-  
+
   // Job Details
   title: varchar("title").notNull(),
   description: text("description"),
   location: varchar("location"),
   coordinatesLat: varchar("coordinates_lat"),
   coordinatesLng: varchar("coordinates_lng"),
-  
+
   // Job Status
   status: varchar("status").default('created'), // 'created', 'assigned', 'in_progress', 'completed', 'cancelled'
-  
+
   // File Processing
   fileCount: integer("file_count").default(0),
   processedCount: integer("processed_count").default(0),
   anomalyCount: integer("anomaly_count"),
   reportGenerated: boolean("report_generated").default(false),
-  
+
   // Scheduling
   scheduledDate: timestamp("scheduled_date"),
   completedAt: timestamp("completed_at"),
-  
+
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// Automated processing jobs created by Python pipeline
+export const processingJobs = pgTable("jobs", {
+  id: serial("id").primaryKey(),
+  jobId: text("job_id").notNull().unique(),
+  pilotId: text("pilot_id"),
+  location: text("location"),
+  status: text("status").default('pending'),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const processingResults = pgTable("results", {
+  id: serial("id").primaryKey(),
+  jobId: text("job_id").references(() => processingJobs.jobId, { onDelete: 'cascade' }),
+  anomaliesFound: integer("anomalies_found"),
+  excelUrl: text("excel_url"),
+  pdfUrl: text("pdf_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  jobUnique: uniqueIndex("results_job_id_unique").on(table.jobId),
+}));
+
+export const flightPaths = pgTable("flight_paths", {
+  id: serial("id").primaryKey(),
+  jobId: text("job_id").references(() => processingJobs.jobId, { onDelete: 'cascade' }),
+  kmzFileUrl: text("kmz_file_url"),
+  generatedPathUrl: text("generated_path_url"),
+  geojsonUrl: text("geojson_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  jobUnique: uniqueIndex("flight_paths_job_id_unique").on(table.jobId),
+}));
 
 // Relations
 export const usersRelations = relations(users, ({ one }) => ({
@@ -170,19 +204,38 @@ export const pilotProfilesRelations = relations(pilotProfiles, ({ one, many }) =
     fields: [pilotProfiles.userId],
     references: [users.id],
   }),
-  assignedJobs: many(jobs, {
+  assignedJobs: many(inspectionJobs, {
     relationName: "pilot_jobs",
   }),
 }));
 
-export const jobsRelations = relations(jobs, ({ one }) => ({
+export const inspectionJobsRelations = relations(inspectionJobs, ({ one }) => ({
   client: one(users, {
-    fields: [jobs.clientUserId],
+    fields: [inspectionJobs.clientUserId],
     references: [users.id],
   }),
   assignedPilot: one(pilotProfiles, {
-    fields: [jobs.assignedPilotId],
+    fields: [inspectionJobs.assignedPilotId],
     references: [pilotProfiles.id],
+  }),
+}));
+
+export const processingJobsRelations = relations(processingJobs, ({ many }) => ({
+  results: many(processingResults),
+  flightPaths: many(flightPaths),
+}));
+
+export const processingResultsRelations = relations(processingResults, ({ one }) => ({
+  job: one(processingJobs, {
+    fields: [processingResults.jobId],
+    references: [processingJobs.jobId],
+  }),
+}));
+
+export const flightPathsRelations = relations(flightPaths, ({ one }) => ({
+  job: one(processingJobs, {
+    fields: [flightPaths.jobId],
+    references: [processingJobs.jobId],
   }),
 }));
 
@@ -191,8 +244,14 @@ export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type UpsertPilotProfile = typeof pilotProfiles.$inferInsert;
 export type PilotProfile = typeof pilotProfiles.$inferSelect;
-export type UpsertJob = typeof jobs.$inferInsert;
-export type Job = typeof jobs.$inferSelect;
+export type UpsertInspectionJob = typeof inspectionJobs.$inferInsert;
+export type InspectionJob = typeof inspectionJobs.$inferSelect;
+export type ProcessingJob = typeof processingJobs.$inferSelect;
+export type ProcessingJobInsert = typeof processingJobs.$inferInsert;
+export type ProcessingResult = typeof processingResults.$inferSelect;
+export type ProcessingResultInsert = typeof processingResults.$inferInsert;
+export type FlightPath = typeof flightPaths.$inferSelect;
+export type FlightPathInsert = typeof flightPaths.$inferInsert;
 
 // Combined types for API responses
 export type UserWithPilotProfile = User & {
