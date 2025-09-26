@@ -113,6 +113,13 @@ const Signup = () => {
                       Or sign up with email
                     </span>
 
+                    <div className="mb-6 rounded-lg border border-primary/40 bg-primary/10 p-4 text-sm text-white">
+                      <span className="font-medium text-white">Building a pilot account?</span>
+                      <span className="ml-2 text-white/80">Jump straight to the</span>
+                      <Link href="/pilot-registration" className="ml-1 text-primary-light underline">pilot registration form</Link>
+                      <span className="ml-2 text-white/80">to complete the full questionnaire.</span>
+                    </div>
+
                     <SwitchOptions
                       isPassword={isPassword}
                       setIsPassword={setIsPassword}

@@ -48,7 +48,9 @@ const MagicLink = () => {
           }
         })
         .catch((error) => {
-          toast.error(error);
+          console.error("Magic link error:", error);
+          const message = error instanceof Error ? error.message : "Failed to send email. Please try again.";
+          toast.error(message);
           setLoader(false);
         });
     }
@@ -92,3 +94,4 @@ const MagicLink = () => {
 };
 
 export default MagicLink;
+

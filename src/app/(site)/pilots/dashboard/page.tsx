@@ -36,7 +36,7 @@ const PilotDashboardPage = async () => {
       <div className="min-h-screen flex items-center justify-center bg-black">
         <div className="text-center text-white">
           <h1 className="text-2xl font-bold mb-4">Application Under Review</h1>
-          <p className="text-gray-300">Your pilot application is currently being reviewed. You'll receive an email once approved.</p>
+          <p className="text-gray-300">Your pilot application is currently being reviewed. You&apos;ll receive an email once approved.</p>
         </div>
       </div>
     );

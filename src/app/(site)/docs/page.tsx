@@ -12,7 +12,7 @@ export default function DocsPage() {
       <h1>ComplianceDrone Documentation</h1>
 
       <p className='font-medium'>
-        Welcome to ComplianceDrone's documentation. This comprehensive platform
+        Welcome to ComplianceDrone&apos;s documentation. This comprehensive platform
         provides AI-powered thermal inspection services for solar installations
         and electrical infrastructure.
       </p>

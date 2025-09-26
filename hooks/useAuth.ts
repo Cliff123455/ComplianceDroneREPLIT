@@ -1,8 +1,8 @@
-// React authentication hook for ComplianceDrone
-// Based on Replit Auth integration
+﻿// React authentication hook for ComplianceDrone using NextAuth
 
+import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/router";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export interface AuthUser {
   id: string;
@@ -12,64 +12,78 @@ export interface AuthUser {
   profileImageUrl?: string;
   pilotProfile?: {
     id: string;
-    status: 'pending' | 'approved' | 'active' | 'inactive' | 'suspended';
+    status: "pending" | "approved" | "active" | "inactive" | "suspended";
     companyName?: string;
     phoneNumber?: string;
     part107Certified: boolean;
     completedJobs: number;
     averageRating?: number;
+    totalEarnings?: number;
+    thermalExperienceYears?: number | null;
+    totalFlightHours?: number | null;
   };
 }
 
-// Custom fetch function with error handling
 const fetchUser = async (): Promise<AuthUser | null> => {
-  const response = await fetch('/api/auth/user');
-  
+  const response = await fetch("/api/auth/user", { cache: "no-store" });
+
   if (response.status === 401) {
-    return null; // User not authenticated
+    return null;
   }
-  
+
   if (!response.ok) {
     throw new Error(`Failed to fetch user: ${response.statusText}`);
   }
-  
+
   return response.json();
 };
 
 export function useAuth() {
   const queryClient = useQueryClient();
-  
-  const { data: user, isLoading, error } = useQuery({
-    queryKey: ["/api/auth/user"],
+  const { data: session, status } = useSession();
+
+  const {
+    data: user,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["auth", "user"],
     queryFn: fetchUser,
+    enabled: status === "authenticated",
     retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 
-  const login = () => {
-    window.location.href = "/api/login";
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      queryClient.setQueryData(["auth", "user"], null);
+    }
+  }, [status, queryClient]);
+
+  const login = (provider?: string) => {
+    signIn(provider);
   };
 
   const logout = () => {
-    // Clear the user query cache
-    queryClient.setQueryData(["/api/auth/user"], null);
-    // Redirect to logout endpoint
-    window.location.href = "/api/logout";
+    signOut({ callbackUrl: "/" });
+    queryClient.setQueryData(["auth", "user"], null);
   };
 
   const refreshUser = () => {
-    queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+    refetch();
   };
 
   return {
     user,
-    isLoading,
-    isAuthenticated: !!user,
+    session,
+    isLoading: status === "loading" || isLoading,
+    isAuthenticated: status === "authenticated",
     isPilot: !!user?.pilotProfile,
-    pilotStatus: user?.pilotProfile?.status || null,
+    pilotStatus: user?.pilotProfile?.status ?? null,
     login,
     logout,
     refreshUser,
-    error
+    error,
   };
 }

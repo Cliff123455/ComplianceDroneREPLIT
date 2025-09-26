@@ -5,7 +5,7 @@ const Hero = () => {
   return (
     <section
       id='home'
-      className='relative z-10 overflow-hidden pt-35 md:pt-40 xl:pt-45'
+      className='relative z-10 overflow-hidden bg-gradient-to-b from-\[#1f2937\] via-\[#182235\] to-\[#0b172a\] pt-35 md:pt-40 xl:pt-45'
     >
       {/* <!-- Hero Bg Shapes --> */}
       <div className='mx-auto max-w-7xl'>
@@ -36,15 +36,15 @@ const Hero = () => {
             />
 
             <span className='hero-subtitle-text'>
-              Professional Thermal Inspection Services
+              Compliance-Ready Drone Intelligence
             </span>
           </span>
           <h1 className='xl:text-heading-1 mb-6 text-3xl font-extrabold text-white sm:text-5xl'>
-            Save Thousands with Early Problem Detection Using Advanced Drone Technology
+            Compliance-Ready Thermal Inspections in Days, Not Weeks
           </h1>
 
           <p className='mx-auto mb-9 max-w-[500px] font-medium md:text-lg'>
-            ComplianceDrone provides AI-powered thermal inspection services that detect electrical issues, equipment failures, and maintenance needs before they become costly problems. Our certified pilots use cutting-edge thermal imaging to save you money and prevent catastrophic failures.
+            ComplianceDrone unites certified pilots, AI-driven anomaly detection, and automated reporting so you can document inspections, eliminate downtime, and stay ahead of regulatory deadlines.
           </p>
 
           <div className='flex flex-col gap-4 sm:flex-row sm:justify-center sm:gap-6'>
@@ -52,13 +52,13 @@ const Hero = () => {
               href='/contact'
               className='hero-button-gradient inline-flex rounded-lg px-7 py-3 font-medium text-white duration-300 ease-in hover:opacity-80'
             >
-              Request Quote
+              Schedule Inspection
             </Link>
             <Link
               href='/pilots'
               className='inline-flex rounded-lg border border-white/20 bg-white/5 px-7 py-3 font-medium text-white backdrop-blur-sm duration-300 ease-in hover:bg-white/10'
             >
-              Apply to Fly
+              Join Pilot Network
             </Link>
           </div>
         </div>
@@ -80,3 +80,5 @@ const Hero = () => {
 };
 
 export default Hero;
+
+

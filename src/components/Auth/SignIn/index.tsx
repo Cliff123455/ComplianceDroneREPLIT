@@ -59,7 +59,12 @@ const Signin = () => {
     setLoader(true);
     signIn("credentials", { ...data, redirect: false }).then(async (callback) => {
       if (callback?.error) {
-        toast.error(callback.error);
+        const message =
+          typeof callback.error === "string"
+            ? callback.error
+            : "Unable to sign in. Please try again.";
+
+        toast.error(message);
         setLoader(false);
         return;
       }
@@ -119,6 +124,13 @@ const Signin = () => {
                       Or sign in with email
                     </span>
 
+                    <div className="mb-6 rounded-lg border border-primary/40 bg-primary/10 p-4 text-sm text-white">
+                      <span className="font-medium text-white">Need pilot access?</span>
+                      <span className="ml-2 text-white/80">Submit the</span>
+                      <Link href="/pilot-registration" className="ml-1 text-primary-light underline">pilot registration questionnaire</Link>
+                      <span className="ml-2 text-white/80">to get approved before signing in.</span>
+                    </div>
+
                     <SwitchOptions
                       isPassword={isPassword}
                       setIsPassword={setIsPassword}
@@ -274,3 +286,4 @@ const Signin = () => {
 };
 
 export default Signin;
+

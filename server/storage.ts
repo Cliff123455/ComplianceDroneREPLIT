@@ -4,16 +4,24 @@
 import {
   users,
   pilotProfiles,
-  jobs,
+  processingJobs,
+  processingResults,
+  flightPaths,
   type User,
   type UpsertUser,
   type PilotProfile,
   type UpsertPilotProfile,
   type UserWithPilotProfile,
   type PilotWithUser,
+  type ProcessingJob,
+  type ProcessingJobInsert,
+  type ProcessingResult,
+  type ProcessingResultInsert,
+  type FlightPath,
+  type FlightPathInsert,
 } from "../shared/schema";
 import { db } from "./db";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -37,6 +45,13 @@ export interface IStorage {
   getApprovedPilots(): Promise<PilotWithUser[]>;
   approvePilot(profileId: string, approvedBy: string): Promise<PilotProfile>;
   updatePilotStatus(profileId: string, status: 'pending' | 'approved' | 'active' | 'inactive' | 'suspended'): Promise<PilotProfile>;
+
+  // Processing pipeline operations
+  upsertProcessingJob(job: ProcessingJobInsert): Promise<ProcessingJob>;
+  updateProcessingJobStatus(jobId: string, status: string): Promise<ProcessingJob | undefined>;
+  saveProcessingResult(result: ProcessingResultInsert): Promise<ProcessingResult>;
+  getProcessingJob(jobId: string): Promise<{ job: ProcessingJob; result?: ProcessingResult } | undefined>;
+  saveFlightPath(entry: FlightPathInsert): Promise<FlightPath>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -178,7 +193,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updatePilotStatus(
-    profileId: string, 
+    profileId: string,
     status: 'pending' | 'approved' | 'active' | 'inactive' | 'suspended'
   ): Promise<PilotProfile> {
     const [profile] = await db
@@ -190,6 +205,84 @@ export class DatabaseStorage implements IStorage {
       .where(eq(pilotProfiles.id, profileId))
       .returning();
     return profile;
+  }
+
+  // Processing pipeline operations
+  async upsertProcessingJob(job: ProcessingJobInsert): Promise<ProcessingJob> {
+    const [record] = await db
+      .insert(processingJobs)
+      .values(job)
+      .onConflictDoUpdate({
+        target: processingJobs.jobId,
+        set: {
+          pilotId: job.pilotId ?? null,
+          location: job.location ?? null,
+          status: job.status ?? null,
+        },
+      })
+      .returning();
+    return record;
+  }
+
+  async updateProcessingJobStatus(jobId: string, status: string): Promise<ProcessingJob | undefined> {
+    const [record] = await db
+      .update(processingJobs)
+      .set({ status })
+      .where(eq(processingJobs.jobId, jobId))
+      .returning();
+    return record;
+  }
+
+  async saveProcessingResult(result: ProcessingResultInsert): Promise<ProcessingResult> {
+    const [record] = await db
+      .insert(processingResults)
+      .values(result)
+      .onConflictDoUpdate({
+        target: processingResults.jobId,
+        set: {
+          anomaliesFound: result.anomaliesFound,
+          excelUrl: result.excelUrl,
+          pdfUrl: result.pdfUrl,
+          createdAt: new Date(),
+        },
+      })
+      .returning();
+    return record;
+  }
+
+  async getProcessingJob(jobId: string): Promise<{ job: ProcessingJob; result?: ProcessingResult } | undefined> {
+    const [job] = await db
+      .select()
+      .from(processingJobs)
+      .where(eq(processingJobs.jobId, jobId));
+
+    if (!job) {
+      return undefined;
+    }
+
+    const [result] = await db
+      .select()
+      .from(processingResults)
+      .where(eq(processingResults.jobId, jobId));
+
+    return { job, result: result || undefined };
+  }
+
+  async saveFlightPath(entry: FlightPathInsert): Promise<FlightPath> {
+    const [record] = await db
+      .insert(flightPaths)
+      .values(entry)
+      .onConflictDoUpdate({
+        target: flightPaths.jobId,
+        set: {
+          kmzFileUrl: entry.kmzFileUrl ?? null,
+          generatedPathUrl: entry.generatedPathUrl ?? null,
+          geojsonUrl: entry.geojsonUrl ?? null,
+          createdAt: new Date(),
+        },
+      })
+      .returning();
+    return record;
   }
 }
 

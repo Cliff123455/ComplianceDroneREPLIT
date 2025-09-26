@@ -31,16 +31,16 @@ const Header = () => {
   return (
     <>
       <header
-        className={`fixed left-0 top-0 z-1000 w-full ${
+        className={`fixed left-0 top-0 z-1000 w-full transition-colors duration-300 ${
           stickyMenu
-            ? "before:features-row-border bg-dark/70 py-4! shadow-sm backdrop-blur-lg transition duration-100 before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-full lg:py-0!"
-            : "py-7 lg:py-0"
+            ? "before:features-row-border bg-gradient-to-b from-white/95 via-slate-100/90 to-slate-200/90 py-4! shadow-sm backdrop-blur-lg transition duration-100 before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-full lg:py-0!"
+            : "bg-gradient-to-b from-white/95 via-slate-100/80 to-transparent py-7 lg:py-0"
         }`}
       >
         <div className="relative mx-auto max-w-[1170px] items-center justify-between px-4 sm:px-8 lg:flex xl:px-0">
           <div className="flex w-full items-center justify-between lg:w-1/4">
             <Link href="/">
-              <Image src="/images/ComplianceDrone-logo.png" alt="ComplianceDrone Logo" width={200} height={60} />
+              <Image src="/images/ComplianceDrone-logo.png" alt="ComplianceDrone Logo" width={200} height={60} priority />
             </Link>
 
             <button
@@ -104,10 +104,10 @@ const Header = () => {
                     ) : (
                       <Link
                         href={`${menuItem.path}`}
-                        className={`hover:nav-gradient relative border border-transparent px-4 py-1.5 text-sm hover:text-white ${
+                        className={`hover:nav-gradient relative border border-transparent px-4 py-1.5 text-sm transition-colors ${
                           pathUrl === menuItem.path
-                            ? "nav-gradient text-white"
-                            : "text-white/80"
+                            ? "nav-gradient text-slate-900"
+                            : "text-slate-700 hover:text-slate-900"
                         }`}
                       >
                         {menuItem.title}
@@ -125,7 +125,7 @@ const Header = () => {
                   <button
                     aria-label="Sign Out button"
                     onClick={() => signOut()}
-                    className="text-sm text-white hover:text-opacity-75"
+                    className="text-sm text-slate-700 hover:text-slate-900"
                   >
                     Sign Out
                   </button>
@@ -134,13 +134,13 @@ const Header = () => {
                 <>
                   <Link
                     href="/auth/signin"
-                    className="text-sm text-white hover:text-opacity-75"
+                    className="text-sm text-slate-700 hover:text-slate-900"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/auth/signup"
-                    className="button-border-gradient hover:button-gradient-hover relative flex items-center gap-1.5 rounded-lg px-4.5 py-2 text-sm text-white shadow-button hover:shadow-none"
+                    className="button-border-gradient hover:button-gradient-hover relative flex items-center gap-1.5 rounded-lg px-4.5 py-2 text-sm text-slate-900 shadow-button hover:shadow-none"
                   >
                     Sign up
                     <svg
@@ -168,3 +168,4 @@ const Header = () => {
 };
 
 export default Header;
+

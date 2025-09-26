@@ -233,7 +233,9 @@ const MyProjects = ({ pilotProfile }: MyProjectsProps) => {
                   <div className="flex">{renderStars(project.rating)}</div>
                 </div>
                 {project.feedback && (
-                  <p className="text-gray-300 text-sm italic">"{project.feedback}"</p>
+                  <p className="text-gray-300 text-sm italic">
+                    &ldquo;{project.feedback}&rdquo;
+                  </p>
                 )}
               </div>
             )}
